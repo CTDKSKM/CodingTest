@@ -1,9 +1,7 @@
 function solution(my_str, n) {
     var answer = [];
-    const arr = [...my_str]
-    while (arr.length > n) {
-        answer.push(arr.splice(0,n).join(''))
+    for(let i=0; i < my_str.length; i+=n) {
+        answer.push(my_str.substr(i, n));
     }
-    answer.push(arr.slice(0).join(''))
     return answer;
 }
