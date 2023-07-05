@@ -1,12 +1,19 @@
 function solution(arr) {
-    var stk = [arr[0]];
-    for(let i = 1; i<arr.length;) {
-        if (stk[0] != undefined) {
-            if (stk[stk.length-1] < arr[i]) {
-            stk.push(arr[i])
-            i++
-            } else stk.pop()
-        } else {stk.push(arr[i]); i++}
+    const stk = [];
+    // let i = 0
+    // for (let i = 0; i < arr.length; i += 1) {
+    //     while ((stk[stk.length-1] || 0) >= arr[i]) {
+    //         stk.pop()
+    //     }
+    //     stk.push(arr[i])
+    // }
+    let prev = 100001
+    for (let i = arr.length - 1; i >= 0; i -= 1) {
+        const v = arr[i]
+        if (v < prev) {
+            stk.unshift(v)
+            prev = v
+        }
     }
     return stk;
 }
