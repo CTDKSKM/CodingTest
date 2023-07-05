@@ -1,9 +1,6 @@
 function solution(my_string) {
-    var alp = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-    const arr = Array(52).fill(0)
-    for(let i=0; i<my_string.length; i++) {
-        arr[alp.indexOf(my_string[i])]++
-    }
-
-    return arr;
+    let ans = Array(58).fill(0);
+    for (let c of my_string) ans[c.charCodeAt()-65]++;
+    ans.splice(26,6);
+    return ans;
 }
