@@ -1,18 +1,11 @@
-function solution(arr) {
-    var answer = 0;
-    let before = [-1];
-
-    while(!arr.every((e,idx) => e == before[idx])) {
-        before =[...arr];
-
-        arr = arr.map(e => {
-            if(e >= 50 & e % 2 == 0)
-                return e / 2;
-            if(e < 50 & e % 2 != 0)
-                return e * 2 + 1;
-            return e;
+function solution(arr, n=0) {
+    while(!arr.every(x => (x >= 50 && x % 2 === 1) || (x < 50 && x % 2 === 0))) {
+        arr = arr.map(x => {
+            if (x >= 50 && x % 2 === 0) return x / 2;
+            if (x < 50 && x % 2 === 1) return x * 2 + 1;
+            return x;
         })
-        answer++;
+        n++;
     }
-    return answer - 1;
+    return n;
 }
