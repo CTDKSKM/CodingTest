@@ -1,21 +1,19 @@
-function solution(arr, n=0) {
-    let loopCount = 0;
-  const fibo = list => {
-    let count = 0;
-    const result = list.map(int => {
-      if (int >= 50 && int % 2 === 0) {
-        return int / 2;
-      } else if (int < 50 && int % 2 === 1) {
-        return int * 2 + 1;
-      }
-      count = count + 1;
-      return int;
-    });
-    if (count === list.length) return loopCount;
-    fibo(result);
-    loopCount = loopCount + 1;
-    console.log(result);
-    return loopCount;
-  };
-  return fibo(arr, arr.length);
+function solution(arr) {
+    var answer = 0;
+    for (let i =0; i>=0; i++) {
+        const tempArr = arr
+        arr = arr.map(item=>{
+            if (item >= 50) {
+                if (item % 2 == 0) return item/2
+                return item
+            } else if (item % 2 != 0) {
+                return item*2+1
+            }
+            return item
+        }) 
+        if (tempArr.reduce((acc,cur)=>acc+cur) === arr.reduce((acc,cur)=>acc+cur)) break
+        answer++
+
+    }
+    return answer;
 }
