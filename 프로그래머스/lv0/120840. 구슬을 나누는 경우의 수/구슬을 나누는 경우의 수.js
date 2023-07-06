@@ -1,18 +1,16 @@
 function solution(balls, share) {
-  function combination(n, r) {
-    let numerator = 1;
-    let denominator = 1;
-
-    for (let i = n; i > n - r; i--) {
-      numerator *= i;
+  function pac(num) {
+    let result = 1;
+    if (!num) return result;
+    for (let i = num; i > 0; i--) {
+      result *= i;
     }
-
-    for (let i = r; i > 1; i--) {
-      denominator *= i;
-    }
-
-    return numerator / denominator;
+    return result;
   }
 
-  return combination(balls, share);
+  const npac = pac(balls);
+  const nmmpac = pac(balls - share);
+  const mpac = pac(share);
+
+  return Math.round(npac / (nmmpac * mpac));
 }
