@@ -1,5 +1,5 @@
 function solution(balls, share) {
-  function pac(num) {
+  function fac(num) {
     let result = 1;
     if (!num) return result;
     for (let i = num; i > 0; i--) {
@@ -8,9 +8,9 @@ function solution(balls, share) {
     return result;
   }
 
-  const npac = pac(balls);
-  const nmmpac = pac(balls - share);
-  const mpac = pac(share);
+  const nfac = fac(balls);
+  const nmmfac = fac(balls - share);
+  const mfac = fac(share);
 
-  return Math.round(npac / (nmmpac * mpac));
+  return Math.round(nfac / (nmmfac * mfac));
 }
