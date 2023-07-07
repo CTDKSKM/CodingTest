@@ -1,69 +1,79 @@
 function solution(board) {
-    var answer = 0;
-    if (board.length==1) {
-        return board.flat().filter(v=>!v).length
-    }
-    for(let i=0; i<board.length; i++) {
-        for(let j=0; j<board.length; j++) {
+    let n = board.length;
+    let zero = 0;
+    let bomb = 0;
+    let answer = 0;
+
+    for (let i = 0; i < board.length; i++) {
+        for (let j = 0; j < board[i].length; j++) {
             if (board[i][j] == 1) {
-                if (i==0) {
-                    if (j==0) {
-                        !board[i][j+1] ? board[i][j+1] = 2 : board[i][j+1];
-                        !board[i+1][j] ? board[i+1][j] = 2 : board[i+1][j];
-                        !board[i+1][j+1] ? board[i+1][j+1] = 2 : board[i+1][j+1];
-                    } else if (j==board.length-1) {
-                        !board[i][j-1] ? board[i][j-1] = 2 : board[i][j-1];
-                        !board[i+1][j-1] ? board[i+1][j-1] = 2 : board[i+1][j-1];
-                        !board[i+1][j] ? board[i+1][j] = 2 : board[i+1][j];
-                    } else {
-                        !board[i][j-1] ? board[i][j-1] = 2 : board[i][j-1];
-                        !board[i][j+1] ? board[i][j+1] = 2 : board[i][j+1];
-                        !board[i+1][j-1] ? board[i+1][j-1] = 2 : board[i+1][j-1];
-                        !board[i+1][j] ? board[i+1][j] = 2 : board[i+1][j];
-                        !board[i+1][j+1] ? board[i+1][j+1] = 2 : board[i+1][j+1];
-                    }
-                } else if (j==0) {
-                    if (i==board.length-1) {
-                        !board[i-1][j] ? board[i-1][j] = 2 : board[i-1][j];
-                        !board[i-1][j+1] ? board[i-1][j+1] = 2 : board[i-1][j+1];
-                        !board[i][j+1] ? board[i][j+1] = 2 : board[i][j+1];
-                    } else {
-                        !board[i-1][j] ? board[i-1][j] = 2 : board[i-1][j];
-                        !board[i-1][j+1] ? board[i-1][j+1] = 2 : board[i-1][j+1];
-                        !board[i][j+1] ? board[i][j+1] = 2 : board[i][j+1];
-                        !board[i+1][j] ? board[i+1][j] = 2 : board[i+1][j];
-                        !board[i+1][j+1] ? board[i+1][j+1] = 2 : board[i+1][j+1];
-                    }
-                } else if (i==board.length-1) {
-                    if (j==board.length-1) {
-                        !board[i-1][j-1] ? board[i-1][j-1] = 2 : board[i-1][j-1];
-                        !board[i-1][j] ? board[i-1][j] = 2 : board[i-1][j];
-                        !board[i][j-1] ? board[i][j-1] = 2 : board[i][j-1];
-                    } else {
-                        !board[i-1][j-1] ? board[i-1][j-1] = 2 : board[i-1][j-1];
-                        !board[i-1][j] ? board[i-1][j] = 2 : board[i-1][j];
-                        !board[i-1][j+1] ? board[i-1][j+1] = 2 : board[i-1][j+1];
-                        !board[i][j-1] ? board[i][j-1] = 2 : board[i][j-1];
-                        !board[i][j+1] ? board[i][j+1] = 2 : board[i][j+1];
-                    }
-                } else if (j==board.length-1) {
-                    !board[i-1][j-1] ? board[i-1][j-1] = 2 : board[i-1][j-1];
-                    !board[i-1][j] ? board[i-1][j] = 2 : board[i-1][j];
-                    !board[i][j-1] ? board[i][j-1] = 2 : board[i][j-1];
-                    !board[i+1][j-1] ? board[i+1][j-1] = 2 : board[i+1][j-1];
-                    !board[i+1][j] ? board[i+1][j] = 2 : board[i+1][j];
-                } else {
-                    !board[i-1][j-1] ? board[i-1][j-1] = 2 : board[i-1][j-1];
-                    !board[i-1][j] ? board[i-1][j] = 2 : board[i-1][j];
-                    !board[i-1][j+1] ? board[i-1][j+1] = 2 : board[i-1][j+1];
-                    !board[i][j-1] ? board[i][j-1] = 2 : board[i][j-1];
-                    !board[i][j+1] ? board[i][j+1] = 2 : board[i][j+1];
-                    !board[i+1][j-1] ? board[i+1][j-1] = 2 : board[i+1][j-1];
-                    !board[i+1][j] ? board[i+1][j] = 2 : board[i+1][j];
-                    !board[i+1][j+1] ? board[i+1][j+1] = 2 : board[i+1][j+1];
-                }
+                bomb++;
+            } else {
+                zero++;
             }
         }
     }
-    return board.flat().filter(v=>!v).length;
+
+    if (bomb == n * n) {
+        return 0;
+    }
+
+    if (zero == n * n) {
+        return n * n;
+    }
+
+    // // 지뢰 주변 8곳 위험지대로 변환
+    const bombFunc = (i, j) => {
+        // console.log(`${i}배열, ${j}요소`)
+        // console.log(`${i - 1}배열, ${j -1}요소`)
+
+        // 지뢰가 있는 가운데 배열
+        if (board[i][j]) {
+            board[i][j] = "*";
+        }
+        if (board[i][j - 1] != undefined && board[i][j - 1] != 1) {
+            board[i][j - 1] = "*";
+        }
+        if (board[i][j + 1] != undefined && board[i][j + 1] != 1) {
+            board[i][j + 1] = "*";
+        }
+
+        // 지뢰가 있는 위쪽 배열
+        if (board[i - 1] != undefined) {
+            if (board[i - 1][j - 1] != undefined && board[i - 1][j - 1] != 1) {
+                board[i - 1][j - 1] = "*";
+            }
+            if (board[i - 1][j] != 1) {
+                board[i - 1][j] = "*";
+            }
+            if (board[i - 1][j + 1] != undefined && board[i - 1][j + 1] != 1) {
+                board[i - 1][j + 1] = "*";
+            }
+        }
+
+        // 지뢰가 있는 아래쪽 배열
+        if (board[i + 1] != undefined) {
+            if (board[i + 1][j - 1] != undefined && board[i + 1][j - 1] != 1) {
+                board[i + 1][j - 1] = "*";
+            }
+            if (board[i + 1][j] != 1) {
+                board[i + 1][j] = "*";
+            }
+            if (board[i + 1][j + 1] != undefined && board[i + 1][j + 1] != 1) {
+                board[i + 1][j + 1] = "*";
+            }
+        }
+        return (
+            n * n - (board.join("").split(",").join("").split("*").length - 1)
+        );
+    };
+
+    for (let i = 0; i < board.length; i++) {
+        for (let j = 0; j < board[i].length; j++) {
+            if (board[i][j] == 1) {
+                answer = bombFunc(i, j);
+            }
+        }
+    }
+    return answer;
 }
