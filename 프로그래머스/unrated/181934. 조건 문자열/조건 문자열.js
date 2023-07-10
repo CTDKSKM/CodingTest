@@ -1,11 +1,11 @@
+const operations = {
+  '>=': (n, m) => n >= m,
+  '<=': (n, m) => n <= m,
+  '>!': (n, m) => n > m,
+  '<!': (n, m) => n < m,
+};
+
 function solution(ineq, eq, n, m) {
-    var answer = 0;
-    if (ineq === ">") {
-        if (eq === "=") answer = n >= m
-        else answer = n>m
-    } else {
-        if (eq === "=") answer = n <= m
-        else answer = n<m
-    }
-    return answer ? 1 : 0;
+  const op = operations[ineq + eq];
+  return Number(op(n, m));
 }
