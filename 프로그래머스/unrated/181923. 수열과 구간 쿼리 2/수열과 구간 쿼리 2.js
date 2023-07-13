@@ -1,13 +1,3 @@
 function solution(arr, queries) {
-    var answer = [];
-    queries.map(([s, e, k])=>{
-        let temp = [];
-        for(let i = s; i <= e; i++) {
-            if (arr[i] > k) {
-                temp.push(arr[i])
-            }
-        }
-        temp.length ? answer.push(Math.min(...temp)) : answer.push(-1)
-    })
-    return answer;
+    return queries.map(([s, e, k]) => arr.slice(s, e + 1).filter((n) => n > k).sort((a, b) => a - b)[0] || -1);
 }
