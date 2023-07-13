@@ -1,7 +1,14 @@
 
 function solution(arr, queries) {
-    return queries.map(([s,e,k]) => {
-                let aaa = arr.slice(s,e+1).filter((bb) => bb > k)
-                return !aaa.length ? -1 : Math.min(...aaa)
-            })
+    var answer = [];
+    queries.map(([s, e, k])=>{
+        let temp = [];
+        for(let i = s; i <= e; i++) {
+            if (arr[i] > k) {
+                temp.push(arr[i])
+            }
+        }
+        temp.length ? answer.push(Math.min(...temp)) : answer.push(-1)
+    })
+    return answer;
 }
