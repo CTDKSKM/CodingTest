@@ -1,7 +1,10 @@
 function solution(n) {
-    var answer = n%2 ? 1 : 0;
-    for(let i = 1 ; i <= n/2; i+=2) {
-        n%i==0 ? answer++ : false
+    var answer = 0;
+    let  i = 0;
+    while(n > 0){
+        i++;
+       if(n % i  === 0)  answer++;
+        n -= i;
     }
     return answer;
 }
