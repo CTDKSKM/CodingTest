@@ -1,8 +1,6 @@
 function solution(num, total) {
-    let x = ((2*total/num)+1-num)/2
-    let answer=[];
-    for(let i = 0; i<num;i++){
-        answer.push(x+i)
-    }
-    return answer;
+    var min = Math.ceil(total/num - Math.floor(num/2));
+    var max = Math.floor(total/num + Math.floor(num/2));
+
+    return new Array(max-min+1).fill(0).map((el,i)=>{return i+min;});
 }
