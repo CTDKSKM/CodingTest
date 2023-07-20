@@ -1,9 +1,19 @@
 function solution(babbling) {
-    const auntSays = ["aya", "ye", "woo", "ma"];
-    return babbling.map(str=>{
-    for(let i=0; i<auntSays.length; i++) {
-        str.includes(auntSays[i]) ? str = str.replaceAll(auntSays[i], ' ') : str
+    const wordSet = new Set(["aya", "ye", "woo", "ma"])
+    let result = 0;
+
+    for(const word of babbling) {
+        let remainWord = '';
+        let prevWord = '';
+        for(const char of word) {
+            remainWord += char;
+            if(wordSet.has(remainWord)) {
+                if(remainWord === prevWord) break;
+                prevWord = remainWord
+                remainWord = ''
+            }
+        }
+        if(remainWord === '') result++
     }
-        return str
-    }).map(str=>str.replaceAll(' ', '')).filter(v=>!v).length
+    return result;
 }
