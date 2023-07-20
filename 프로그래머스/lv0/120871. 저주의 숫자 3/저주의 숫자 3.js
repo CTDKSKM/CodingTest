@@ -1,9 +1,6 @@
 function solution(n) {
-    var answer = 0;
-    let i = 0;
-    for(answer; i<n; answer++) {
-        if (answer.toString().includes('3') || answer%3 == 0) continue
-        i++
-    }
-    return answer-1;
+    let arr = [];
+    let num = 0;
+    while (arr.length !== n && ++num) if (num%3!==0 && !(''+num).includes('3')) arr.push(num);
+    return arr.pop();
 }
