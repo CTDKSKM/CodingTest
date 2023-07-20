@@ -1,6 +1,13 @@
 function solution(num, total) {
-    var min = Math.ceil(total/num - Math.floor(num/2));
-    var max = Math.floor(total/num + Math.floor(num/2));
-
-    return new Array(max-min+1).fill(0).map((el,i)=>{return i+min;});
+    var answer = [];
+    if (num%2) {
+        for(let i=0; i<num; i++) {
+            answer.push(total/num-(num-1)/2+i)
+        }
+    } else {
+        for(let i=0; i<num; i++) {
+            answer.push(Math.ceil(total/num)-(num/2)+i)
+        }
+    }
+    return answer
 }
