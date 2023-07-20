@@ -1,11 +1,15 @@
 function solution(n) {
-    for(let i=1; i<=n; i++){
-        if(i%3 == 0){
-            n++;
+    var count3x = 0;
+    while(n > 0){
+        count3x = count3x + 1;
+        if (count3x.toString().split('').includes('3')){
+            continue;
         }
-        if(String(i).includes("3")& i%3 != 0){
-            n++
+        if (count3x%3 == 0){
+            continue;
         }
+
+        n = n - 1;
     }
-    return n;
+    return count3x;
 }
