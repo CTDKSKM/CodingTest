@@ -1,9 +1,9 @@
 function solution(babbling) {
-    let counter = 0;
-    babbling.forEach(element => {
-        if (element.split(/aya|ye|woo|ma/g).join('') === '') {
-            counter++;
-        }
-    });
-    return counter;
+    const auntSays = ["aya", "ye", "woo", "ma"];
+    return babbling.map(str=>{
+    for(let i=0; i<auntSays.length; i++) {
+        str.includes(auntSays[i]) ? str = str.replaceAll(auntSays[i], ' ') : str
+    }
+        return str
+    }).map(str=>str.replaceAll(' ', '')).filter(v=>!v).length
 }
