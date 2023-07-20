@@ -1,6 +1,11 @@
 function solution(n) {
-    let arr = [];
-    let num = 0;
-    while (arr.length !== n && ++num) if (num%3!==0 && !(''+num).includes('3')) arr.push(num);
-    return arr.pop();
+    for(let i=1; i<=n; i++){
+        if(i%3 == 0){
+            n++;
+        }
+        if(String(i).includes("3")& i%3 != 0){
+            n++
+        }
+    }
+    return n;
 }
