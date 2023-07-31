@@ -1,8 +1,18 @@
-function solution(l, r) {
-    var answer = [];
-    for(let i=l; i<=r; i++) {
-        let temp = i.toString()
-        temp.replaceAll('0', '').replaceAll('5','').length ? false : answer.push(i)
+function* gen50() {
+    let i = 1;
+
+    while(true) {
+        yield Number(Number(i).toString(2)) * 5;
+        i++;
     }
-    return answer.length ? answer : [-1];
+}
+function solution(l, r) {
+    const n = gen50();
+    let a = 0;
+    const arr = [];
+
+    while(a < l) { a = n.next().value; }
+    while(a <= r) { arr.push(a); a = n.next().value; }
+
+    return arr.length ? arr : [-1];
 }
