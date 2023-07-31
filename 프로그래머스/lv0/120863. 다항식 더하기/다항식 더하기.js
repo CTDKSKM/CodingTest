@@ -1,16 +1,14 @@
-function solution(polynomial) {
-    const arr = polynomial.split(" + ");
-    const xNum = arr
-                .filter(n => n.includes("x"))
-                .map(n => n.replace('x', '') || '1')
-                .reduce((acc, cur) => acc + parseInt(cur, 10), 0);
-    const num = arr
-                .filter(n => !isNaN(n))
-                .reduce((acc, cur) => acc + parseInt(cur, 10), 0);
+function solution(p) {
+    var [x, c] = p.split('+').reduce(([a,b],s) => {
+        if (s.includes('x')) {
+            return [a + Number(s.trim().replace('x','') || 1), b];
+        }
+        return [a, b + Number(s)];
+    }, [0, 0]);
 
-    let answer = [];
-    if(xNum) answer.push(`${xNum === 1 ? "" : xNum}x`);
-    if(num) answer.push(num);
-
-    return answer.join(" + ");
+    if (!x && !c) return '0';
+    if (!x) return c.toString();
+    x = `${x==1?'':x}x`;
+    if (!c) return x;
+    return `${x} + ${c}`;
 }
