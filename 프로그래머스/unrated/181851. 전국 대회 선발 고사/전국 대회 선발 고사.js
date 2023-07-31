@@ -1,20 +1,13 @@
 function solution(rank, attendance) {
-  let result = 0;
-
-    for(let i = 0; i < rank.length; i++) {
-        if(!attendance[i]) {
-            rank[i] = 999999;
+    var answer = 0;
+    let count = 0;
+    for(let i=1; i<=rank.length; i++) {
+        if (attendance[rank.indexOf(i)]) {
+            count++
+            if(count == 1) answer+= 10000*rank.indexOf(i)
+            if(count == 2) answer+= 100*rank.indexOf(i)
+            if(count == 3) answer+= rank.indexOf(i)
         }
     }
-
-    let a = rank.indexOf(Math.min(...rank));
-    rank[a] = 999999;
-    let b = rank.indexOf(Math.min(...rank));
-    rank[b] = 999999;
-    let c = rank.indexOf(Math.min(...rank));
-    rank[c] = 999999;
-
-    result = 10000 * a + 100 * b + c;
-
-    return result;
+    return answer
 }
