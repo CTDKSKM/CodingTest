@@ -1,11 +1,10 @@
 function solution(chicken) {
-    let answer = 0;
+    var answer = 0;
     let coupon = chicken
-
-    while(coupon >= 10){
-        answer = answer + parseInt(coupon/10)
-        coupon = parseInt(coupon/10)+ coupon%10
+    for(let i = 0; coupon >= 10; i++) {
+        coupon -= 10
+        answer++
+        coupon++
     }
-
     return answer;
 }
