@@ -1,11 +1,10 @@
 function solution(sizes) {
-    let w = 0;
-    let h = 0;
-    sizes.forEach(s => {
-        const [a, b] = s.sort((a,b) => a-b);
-        if (a > h) h = a;
-        if (b > w) w = b;
-    });
-
-    return w * h;
+    sizes.forEach(v=>v.sort((a,b)=>a-b))
+    const rowArr = []
+    const colArr = []
+    for(let i=0; i<sizes.length; i++) {
+        rowArr.push(sizes[i][0])
+        colArr.push(sizes[i][1])
+    }
+    return Math.max(...rowArr) * Math.max(...colArr);
 }
