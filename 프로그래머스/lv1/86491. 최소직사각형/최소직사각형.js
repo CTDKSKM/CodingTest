@@ -1,10 +1,10 @@
 function solution(sizes) {
-    sizes.forEach(v=>v.sort((a,b)=>a-b))
-    const rowArr = []
-    const colArr = []
-    for(let i=0; i<sizes.length; i++) {
-        rowArr.push(sizes[i][0])
-        colArr.push(sizes[i][1])
-    }
-    return Math.max(...rowArr) * Math.max(...colArr);
+    const rotated = sizes.map(([w, h]) => w < h ? [h, w] : [w, h]);
+
+    let maxSize = [0, 0];
+    rotated.forEach(([w, h]) => {
+        if (w > maxSize[0]) maxSize[0] = w;
+        if (h > maxSize[1]) maxSize[1] = h;
+    })
+    return maxSize[0]*maxSize[1];
 }
