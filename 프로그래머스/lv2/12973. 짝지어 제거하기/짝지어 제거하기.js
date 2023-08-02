@@ -2,9 +2,7 @@ function solution(s)
 {
     const arr = []
     for(let i=0; i<s.length; i++) {
-        if (arr.length) {
             arr[arr.length-1] == s[i] ? arr.pop() : arr.push(s[i])
-        } else arr.push(s[i])
     }
     return arr.length ? 0 : 1
 //     s = [...s]
