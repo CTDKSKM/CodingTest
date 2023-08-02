@@ -1,19 +1,10 @@
 function solution(polynomial) {
-    const values = polynomial.split(' + ');
-    let consts = 0;
-    let xCount = 0;
-    for(const value of values){
-        if(value[value.length-1]==='x'){
-            xCount+=Number(value.replace('x','')||1);
-            continue;
-        }
-        consts+=Number(value);
+    if (!polynomial.includes('x')) {
+        return polynomial.split(' + ').reduce((acc,cur)=>+acc + +cur) + '';
     }
-    let answer = [];
-    if(xCount > 0) {
-        if (xCount===1) answer.push('x');
-        else answer.push(`${xCount}x`);
-    }
-    if(consts!==0) answer.push(consts);
-    return answer.join(' + ') || '0';
+    let 일차항부 = polynomial.split(' + ').filter(v=>v.includes('x')).map(v=>v=='x' ? '1' : v.slice(0,v.length-1)).reduce((acc,cur)=>+acc + +cur) + 'x';
+    if (일차항부=="1x") 일차항부 = "x"
+    const 상수항부 = polynomial.split(' + ').filter(v=>!v.includes('x')).reduce((acc,cur)=>+acc + +cur,0);
+
+    return 상수항부 ? 일차항부 + ' + ' + 상수항부 : 일차항부
 }
