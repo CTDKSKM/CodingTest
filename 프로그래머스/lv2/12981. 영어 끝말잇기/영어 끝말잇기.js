@@ -1,27 +1,18 @@
 function solution(n, words) {
-    var answer = [];
+    const ans = (i,n) => [(i+1)%n||n, Math.ceil((i+1)/n)],
+          said = [words[0]];
 
-    let loser = 0;
-    let round = 1;
-    
-    for (let i=0; i<n && words.length != 0; i++) {
-        if (answer.length) {
-            if (answer[answer.length-1][answer[answer.length-1].length-1] != words[0][0]) {
-                loser = i+1
-                break
-            }
-        }
-        if (answer.includes(words[0])) {
-            loser = i+1
-            break
-        } else answer.push(words.shift());
-        if (i==n-1) {
-            round++
-            i=-1
-        }
+    for (let i = 1; i < words.length; i++){
+        const cur = words[i], // current word
+              pre = words[i-1]; // previous word
+
+        // Does it match the rules?
+        //   IF 끝말잇기 실패 or used word - return
+        //   ELSE push to said words array
+        if (cur[0] !== pre[pre.length-1] ||said.includes(cur)) return ans(i,n)
+        else said.push(cur)
     }
-    return loser ? [loser, round] : [0, 0];
+
+    // It was a good game.
+    return [0,0];
 }
-
-
-// 탈락한 사람 번호(index+1)와 바퀴 수(1부터 시작).
