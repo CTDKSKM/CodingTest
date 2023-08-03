@@ -1,10 +1,8 @@
 function solution(brown, yellow) {
-    const x = (brown - 12) * 0.5;
-    const y = yellow - brown + 8;
-    const i = ( 8 + x + Math.sqrt( Math.pow(x, 2) - (4 * y) ) ) * 0.5;
-    const j = ( 8 + x - Math.sqrt( Math.pow(x, 2) - (4 * y) ) ) * 0.5;
-
-
-    var answer = [i, j];
-    return answer;
+    let sumOfHorizonAndVertical = (brown - 4)/2;
+    for (let i=1; i < sumOfHorizonAndVertical; i++) {
+        if ((sumOfHorizonAndVertical - i)*i === yellow) {
+            return [sumOfHorizonAndVertical - i + 2, i + 2];
+        }
+    }
 }
