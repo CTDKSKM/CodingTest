@@ -1,10 +1,11 @@
-function solution(brown, yellow) {
+function solution(brown, red) {
     var answer = [];
-    const size = brown + yellow
-    const by = brown/2+2
-    for(let isRow=brown/2; answer.length==0; isRow--) {
-        const isColumn = by - isRow
-        if (isRow * isColumn == size) answer.push(isRow, isColumn)
+    for (var i = 3; i <= (brown+red)/i; i++) {
+        var x = Math.floor((brown+red)/i);
+        if( (x-2)*(i-2)=== red) {
+            break;
+        }
     }
-    return answer;
+
+    return [x,i];
 }
