@@ -1,24 +1,29 @@
 function solution(n, words) {
-    var answer = [];
-
-    let loser = 0;
+    const usedWords = new Set(); // 이미 사용된 단어 저장용 Set
     let round = 1;
+    let currentPlayer = 1;
 
-    for (let i=0; i<n && words.length != 0; i++) {
-        if (answer.length) {
-            if (answer[answer.length-1][answer[answer.length-1].length-1] != words[0][0]) {
-                loser = i+1
-                break
-            }
+    for (let i = 0; i < words.length; i++) {
+        if (i > 0 && !isValidWord(words[i - 1], words[i])) {
+            return [currentPlayer, round];
         }
-        if (answer.includes(words[0])) {
-            loser = i+1
-            break
-        } else answer.push(words.shift());
-        if (i==n-1) {
-            round++
-            i=-1
+
+        if (usedWords.has(words[i])) {
+            return [currentPlayer, round];
+        } else {
+            usedWords.add(words[i]);
+        }
+
+        currentPlayer++;
+        if (currentPlayer > n) {
+            currentPlayer = 1;
+            round++;
         }
     }
-    return loser ? [loser, round] : [0, 0];
+
+    return [0, 0];
+}
+
+function isValidWord(prevWord, currentWord) {
+    return prevWord[prevWord.length - 1] === currentWord[0];
 }
