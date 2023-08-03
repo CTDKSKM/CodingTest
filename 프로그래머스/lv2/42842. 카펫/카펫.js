@@ -1,11 +1,10 @@
-function solution(brown, red) {
-    var answer = [];
-    for (var i = 3; i <= (brown+red)/i; i++) {
-        var x = Math.floor((brown+red)/i);
-        if( (x-2)*(i-2)=== red) {
-            break;
-        }
-    }
+function solution(brown, yellow) {
+    const x = (brown - 12) * 0.5;
+    const y = yellow - brown + 8;
+    const i = ( 8 + x + Math.sqrt( Math.pow(x, 2) - (4 * y) ) ) * 0.5;
+    const j = ( 8 + x - Math.sqrt( Math.pow(x, 2) - (4 * y) ) ) * 0.5;
 
-    return [x,i];
+
+    var answer = [i, j];
+    return answer;
 }
