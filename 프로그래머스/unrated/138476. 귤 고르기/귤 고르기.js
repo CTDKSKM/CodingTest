@@ -1,13 +1,9 @@
-function getSum(arr) {
-  return arr.reduce((acc, cur) => acc + cur, 0);
-}
-
 function solution(k, tangerine) {
   const tangMap = {};
 
-  tangerine.forEach((el) => (tangMap[el] = (tangMap[el] || 0) + 1));
+  tangerine.forEach((el) => (tangMap[el] = (tangMap[el] ?? 0) + 1));
 
-  const arr = Object.values(tangMap).sort((a, b) => a - b);
+  const arr = Object.values(tangMap).sort((a,b)=>a-b);
   let answer = 0;
 
   while (k > 0) {
