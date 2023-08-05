@@ -1,57 +1,18 @@
 function solution(n) {
-    var answer = [];
-    for(let i=0; i<n; i++) answer.push([])
+    let ans = Array.from({length:n},()=>[]);
 
-    const position = {
-        x: 0,
-        y: 0
-    }
-    
-    let direction = "right"
+    let rowMin = 1, rowMax = n-1;
+    let colMin = 0, colMax = n-1;
+    let row = col = 0;
 
-    for(let i=1; i<=n**2; i++) {
-        answer[position.y][position.x] = i
-        if (direction == "right") {
-            position.x++
-            if (answer[position.y][position.x]) {
-                position.y++
-                position.x--
-                direction = "down"
-                continue
-            }
-            if (position.x >= n-1) direction = "down"
-        }
-        else if (direction == "down") {
-            position.y++
-            if (answer[position.y][position.x]) {
-                position.y--
-                position.x--
-                direction = "left"
-                continue
-            }
-            if (position.y >= n-1) direction = "left"
-        }
-        else if (direction == "left") {
-            position.x--
-            if (answer[position.y][position.x]) {
-                position.y--
-                position.x++
-                direction = "up"
-                continue
-            }
-            if (position.x <= 0) direction = "up"
-        }
-        else if (direction == "up") {
-            position.y--
-            if (answer[position.y][position.x]) {
-                position.y++
-                position.x++
-                direction = "right"
-                continue
-            }
-            if (position.y <= 0) direction = "right"
-        }
+    let dir = 'r';
+    for (let i = 1; i <= n*n; i++) {
+        ans[row][col]=i;
+        if (dir === 'r') if (col === colMax) colMax--,row++,dir = 'b'; else col++;
+        else if (dir === 'l') if (col === colMin) colMin++,row--,dir = 't'; else col--;
+        else if (dir === 'b') if (row === rowMax) rowMax--, col--, dir = 'l'; else row++;
+        else if (dir === 't') if (row === rowMin) rowMin++, col++, dir = 'r'; else row--;
     }
-    
-    return answer
+
+    return ans;
 }
