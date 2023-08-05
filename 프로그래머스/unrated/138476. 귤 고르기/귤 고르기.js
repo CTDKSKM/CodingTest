@@ -1,15 +1,12 @@
 function solution(k, tangerine) {
     let answer = 0;
-    let counter = []
-    tangerine.forEach(v=>{
-        counter[v] ? counter[v]++ : counter[v]=1
-    })
-    counter = counter.filter(v=>v!=null).sort((a,b)=>a-b)
-    while (k>0) {
-        const temp = counter.pop()
-        answer++
-        k -= temp
-    }
-
-    return answer
+  const tDict = {};
+  tangerine.forEach((t) => tDict[t] = (tDict[t] || 0) + 1);
+  const tArr = Object.values(tDict).sort((a, b) => b - a);
+  for (const t of tArr) {
+    answer++;
+    if (k > t) k -= t;
+    else break;
+  }
+  return answer;
 }

@@ -1,10 +1,10 @@
 # [unrated] 귤 고르기 - 138476 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/138476) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/138476#) 
 
 ### 성능 요약
 
-메모리: 46 MB, 시간: 367.56 ms
+메모리: 50.6 MB, 시간: 65.42 ms
 
 ### 구분
 
