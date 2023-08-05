@@ -1,12 +1,19 @@
+function getSum(arr) {
+  return arr.reduce((acc, cur) => acc + cur, 0);
+}
+
 function solution(k, tangerine) {
-    let answer = 0;
-  const tDict = {};
-  tangerine.forEach((t) => tDict[t] = (tDict[t] || 0) + 1);
-  const tArr = Object.values(tDict).sort((a, b) => b - a);
-  for (const t of tArr) {
-    answer++;
-    if (k > t) k -= t;
-    else break;
+  const tangMap = {};
+
+  tangerine.forEach((el) => (tangMap[el] = (tangMap[el] || 0) + 1));
+
+  const arr = Object.values(tangMap).sort((a, b) => a - b);
+  let answer = 0;
+
+  while (k > 0) {
+    k -= arr.pop();
+    answer += 1;
   }
+
   return answer;
 }
