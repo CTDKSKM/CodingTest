@@ -1,8 +1,10 @@
 function solution(a, b, n) {
-    let answer = 0;
-    while (n >= a) {
-        answer += parseInt(n / a) * b;
-        n = parseInt(n / a) * b + n % a;
+    var answer = 0;
+    let empties = n
+    while (empties>=a) {
+        const trades = Math.floor(empties/a)
+        empties = empties % a + trades*b
+        answer += trades*b
     }
     return answer;
 }
