@@ -1,6 +1,4 @@
 function solution(nums) {
-    const noDuplicatePokemon = new Set(nums);
-    const pokemonVarietyCount = noDuplicatePokemon.size;
-    const pokemonCounts = nums.length;
-    return pokemonVarietyCount > pokemonCounts/2 ? pokemonCounts/2 : pokemonVarietyCount;
+    const result = new Set(nums);
+    return result.size <= nums.length/2 ? result.size : nums.length/2;
 }
