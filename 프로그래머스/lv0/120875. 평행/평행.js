@@ -1,5 +1,4 @@
 function solution(dots) {
-    var answer = 0;
     const 기울기들 = {}
     for(let i=0; i<dots.length; i++) {
         for(let j=i+1; j<dots.length; j++) {
