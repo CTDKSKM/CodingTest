@@ -1,12 +1,8 @@
 function solution(k, m, score) {
-    var answer = 0
-    const arr = score.slice().sort((a,b)=>a-b)
-    for(let i=0; i<Math.floor(score.length/m); i++) {
-        const temp = []
-        for(let j=0; j<m; j++) {
-            temp.push(arr.pop())
-        }
-        answer += (m * Math.min(...temp))
+    let answer = 0;
+    const sortedScore = score.slice().sort((a, b) => a - b).slice(score.length % m);
+    for (let i = 0; i < sortedScore.length; i += m) {
+        answer += sortedScore[i] * m;
     }
     return answer;
 }
