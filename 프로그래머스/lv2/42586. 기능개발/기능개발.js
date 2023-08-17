@@ -1,14 +1,21 @@
 function solution(progresses, speeds) {
-    var answer = [];
-    for (let i=0; progresses.length > 0; i++) {
-        progresses = progresses.map((v,idx)=>v+=speeds[idx])
-        let temp = 0;
-        while (progresses[0] >= 100) {
-            progresses.shift()
-            speeds.shift()
-            temp++
+    const ans = [];
+
+    const results = progresses.map((p, idx) => {
+        const rest = 100 - p;
+        return Math.ceil(rest/speeds[idx])
+    })
+
+    let cnt = 0;
+    let cur = results[0];
+    results.forEach(r => {
+        if(cur < r) {
+            ans.push(cnt);
+            cur = r; cnt = 1;
+        } else {
+            cnt++;
         }
-        temp != 0 ? answer.push(temp) : false
-    }
-    return answer;
+    })
+    ans.push(cnt);
+    return ans;
 }
