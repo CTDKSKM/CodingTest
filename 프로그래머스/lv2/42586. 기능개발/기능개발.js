@@ -1,20 +1,14 @@
 function solution(progresses, speeds) {
-    const length = progresses.length;
-  let answer = [],
-    i = 0,
-    t = 0,
-    numberOfReleases = 0;
-
-  while (i < length) {
-    numberOfReleases = 1;
-    t = Math.ceil((100 - progresses[i]) / speeds[i++]);
-
-    while (progresses[i] + speeds[i] * t > 99) {
-      numberOfReleases++;
-      i++;
+    var answer = [];
+    for (let i=0; progresses.length > 0; i++) {
+        progresses = progresses.map((v,idx)=>v+=speeds[idx])
+        let temp = 0;
+        while (progresses[0] >= 100) {
+            progresses.shift()
+            speeds.shift()
+            temp++
+        }
+        temp != 0 ? answer.push(temp) : false
     }
-    answer.push(numberOfReleases);
-  }
-
-  return answer;
+    return answer;
 }
