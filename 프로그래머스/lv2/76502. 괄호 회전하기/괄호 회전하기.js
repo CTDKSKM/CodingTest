@@ -1,8 +1,7 @@
 function solution(s) {
     let answer = 0;
-    const sArr = [...s]
     for(let i=0; i<s.length; i++) {
-        let str = sArr.join('')
+        let str = s.slice(i) + s.slice(0, i)
         while (true) {
             const len = str.length
             str = str.replaceAll('()', '')
@@ -14,7 +13,6 @@ function solution(s) {
             }
             if (len == str.length) break
         }
-        sArr.push(sArr.shift())
     }
     return answer;
 }
