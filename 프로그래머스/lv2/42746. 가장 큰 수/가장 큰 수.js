@@ -1,12 +1,7 @@
 function solution(numbers) {
-    const result = numbers.sort((a, b) => {
-        const strA = String(a);
-        const strB = String(b);
+    var answer = numbers.map(v=>v+'')
+                        .sort((a,b) => (b+a)*1 - (a+b)*1)
+                        .join('');
 
-        return (strB + strA).localeCompare(strA + strB);
-    }).join('')
-    
-    if (result[0] === '0') return '0'
-    
-    return result
+    return answer[0]==='0'?'0':answer;
 }
