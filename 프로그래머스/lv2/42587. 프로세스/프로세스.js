@@ -1,24 +1,17 @@
-function solution(arr, location) {
-    let answer = 0
-
-    let temp = arr.slice()
-
-    for(let i=0; i<arr.length; i++) {
-        for(let j=0; j<temp.length; j++) {
-            if (temp[0] !== Math.max(...temp)) {
-                temp.push(temp.shift());
-                location == 0 ? location += temp.length-1 : location--; 
-                continue
-            }
-            answer++
-            temp.shift()
-            if (location === 0) {
-                return answer
-            }
-            location--;
+function solution(priorities, location) {
+    var list = priorities.map((t,i)=>({
+        isAnswer : i === location,
+        val : t
+    }));
+    var count = 0;        
+    while(true){
+        var cur = list.splice(0,1)[0];        
+        if(list.some(t=> t.val > cur.val )){
+            list.push(cur);                        
+        }
+        else{            
+            count++;
+            if(cur.isAnswer) return count;
         }
     }
-    
-    return answer
 }
-
