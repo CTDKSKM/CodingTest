@@ -1,21 +1,19 @@
 function solution(priorities, location) {
-    var arr = priorities.map((priority, index) => {
-        return {
-            index: index, priority: priority
-        };
-    });
+    var answer = 0;
 
-    var queue = [];
-
-    while(arr.length > 0) {
-        var firstEle = arr.shift();
-        var hasHighPriority = arr.some(ele => ele.priority > firstEle.priority);
-        if (hasHighPriority) {
-            arr.push(firstEle);
-        } else {
-            queue.push(firstEle);
+    while(priorities.length > 0) {
+        let job = priorities.shift();
+        if(priorities.some(i => i > job)) {
+            priorities.push(job);
+            if(location == 0) location = priorities.length - 1;
+            else location--;
+        }
+        else {
+            answer++;
+            if(location == 0) return answer;
+            else location--;
         }
     }
 
-    return queue.findIndex(queueEle => queueEle.index === location) + 1;
+    return answer;
 }
