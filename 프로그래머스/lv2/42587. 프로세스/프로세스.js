@@ -1,19 +1,23 @@
-function solution(priorities, location) {
-    var answer = 0;
+function solution(arr, location) {
+    let answer = 0
 
-    while(priorities.length > 0) {
-        let job = priorities.shift();
-        if(priorities.some(i => i > job)) {
-            priorities.push(job);
-            if(location == 0) location = priorities.length - 1;
-            else location--;
-        }
-        else {
-            answer++;
-            if(location == 0) return answer;
-            else location--;
+    let temp = arr.slice()
+
+    for(let i=0; i<arr.length; i++) {
+        for(let j=0; j<temp.length; j++) {
+            if (temp[0] !== Math.max(...temp)) {
+                temp.push(temp.shift());
+                location == 0 ? location += temp.length-1 : location--; 
+                continue
+            }
+            answer++
+            temp.shift()
+            if (location === 0) {
+                return answer
+            }
+            location--;
         }
     }
 
-    return answer;
+    return answer
 }
