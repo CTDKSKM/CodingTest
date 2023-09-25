@@ -1,19 +1,21 @@
 function solution(X, Y) {
-    var answer = '';
+    let result = '';
+    const numObj = {};
 
-    const arrX = [...X].sort((a,b)=>a-b)
-    const arrY = [...Y].sort((a,b)=>a-b)
-
-    while (arrX.length && arrY.length) {
-        if (arrY[arrY.length-1] === arrX[arrX.length-1]) {
-            answer+= arrX[arrX.length-1]
-            arrY.pop()
-            arrX.pop()
-        }
-        else if (arrY[arrY.length-1] > arrX[arrX.length-1]) {
-            arrY.pop()
-        } else arrX.pop()
-
+    for (const char of X) {
+        numObj[char] = (numObj[char] || 0) + 1;
     }
-    return answer ? answer[0] == 0 ? '0' : answer : '-1';
+
+    for (const char of Y) {
+        if (!numObj[char]) continue;
+        result += char;
+        numObj[char]--;
+    }
+
+    if (result === '') return '-1';
+    if (+result === 0) return '0';
+    return [...result]
+        .map((num) => +num)
+        .sort((a, b) => b - a)
+        .join('');    
 }
