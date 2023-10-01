@@ -1,7 +1,12 @@
 function solution(N, stages) {
-    return Array(N).fill(0).map((_,index)=>{
-        const 도달수 = stages.filter(stage => stage >= index+1).length
-        const 클리어못한수 = stages.filter(stage => stage == index+1).length
-        return [index+1, (도달수-클리어못한수)/도달수]
-    }).sort((a,b)=>a[1]-b[1]).map(val=>val[0])
+    let records = [];
+    let i;
+    for (i = 0; i<N+1; i++) records.push([0,0,i+1]); //수, 실패율, 스테이지
+    stages.forEach(num => records[num-1][0]++);
+    let ppl=0;
+    for (i=0; i<N+1; i++){
+        records[i][1] = records[i][0]/(stages.length-ppl);
+        ppl+=records[i][0];
+    }
+    return records.slice(0,N).sort((a,b) => b[1]-a[1]).map(el => el[2]);
 }
