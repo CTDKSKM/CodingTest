@@ -1,10 +1,1 @@
-function solution(k, dungeons) {
-    const filtered = dungeons.slice().filter(v => v[0] <= k);
-
-    let answer = 0;
-    for (let i = 0; i < filtered.length; i++) {
-        const subAnswer = solution(k - filtered[i][1],filtered.filter((_, j) => i !== j));
-        if (subAnswer + 1 > answer) answer = subAnswer + 1;
-    }
-    return answer;
-}
+let solution = (k, d) => Math.max(...d.map(([m, v], i) => k < m ? 0 : solution(k - v, [...d.slice(0, i), ...d.slice(i + 1)]) + 1), 0)
