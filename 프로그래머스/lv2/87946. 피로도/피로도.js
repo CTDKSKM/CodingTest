@@ -1,20 +1,10 @@
-function solution(k, d) {
-const N = d.length
-    const visited = new Array(N).fill(0)
-    let ans = 0
+function solution(k, dungeons) {
+    const filtered = dungeons.slice().filter(v => v[0] <= k);
 
-    function dfs(k, cnt){
-        ans = Math.max(cnt, ans)
-
-        for (let j = 0; j < N; j++){
-            if (k >= d[j][0] && !visited[j]){
-                visited[j] = 1
-                dfs(k - d[j][1], cnt + 1)
-                visited[j] = 0
-            }
-        }
+    let answer = 0;
+    for (let i = 0; i < filtered.length; i++) {
+        const subAnswer = solution(k - filtered[i][1],filtered.filter((_, j) => i !== j));
+        if (subAnswer + 1 > answer) answer = subAnswer + 1;
     }
-
-    dfs(k, 0)
-    return ans;
+    return answer;
 }
