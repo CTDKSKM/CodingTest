@@ -1,8 +1,7 @@
 function solution(n, k) {
   return convertToKNumber(n, k).split(0).filter(val=>val!=1 && val!='').map(val=>{
       const num = +val;
-      if (num == 2) return 1
-      for(let i=3; i<=Math.sqrt(num); i++) {
+      for(let i=2; i<=Math.sqrt(num); i++) {
           if(num%i==0) return 0
       }
       return 1
