@@ -87,29 +87,96 @@ class MinHeap {
 
 
 function solution(scoville, K) {
-    let answer = 0;
+    scoville.sort((a,b)=> b - a) 
+    let cnt = 0 ;
+    let under_K = []
+    let flag = 0 // 다 합쳐서 K보다 큰지 안큰지 판별 0이면 안큰거 1이면 큰거
 
-    //우선순위큐(heap) 생성
-    const heap = new MinHeap();
+    for(let i = 0 ; i < scoville.length ; ++i){
+        if(scoville[i] < K){
+            under_K.push(scoville[i])
+        }
+        else{
+            flag = 1
+        }
+    }    
+   // console.log(under_K)
+    let mixed = []
+    let m_i = 0
+    let i = 0
+    let n1 = 0 
+    let n2 = 0
+    while(1){
+       // console.log(mixed, n1 , n2)
+        if(mixed[m_i] != undefined ){
+            if(under_K.length != 0){
+                if(under_K.at(-1) < mixed[m_i]){
+                    n1 = under_K.pop()
+                }
+                else{
+                    n1 = mixed[m_i]
+                    ++m_i
+                }
+            }
+            else{
+                n1 = mixed[m_i]
+                ++m_i
+            }
+        }
+        else{
+            if(under_K.length != 0){
+                n1 = under_K.pop()
+            }
+            else{
+                break;
+            }
+        }
+        if(mixed[m_i] != undefined ){
+            if(under_K.length != 0){
+                if(under_K.at(-1) < mixed[m_i]){
+                    n2 = under_K.pop()
+                }
+                else{
+                    n2 = mixed[m_i]
+                    ++m_i
+                }
+            }
+            else{
+                n2 = mixed[m_i]
+                ++m_i
+            }
+        }
+        else{
+            if(under_K.length != 0){
+                n2 = under_K.pop()
+            }
+            else{
+                ++cnt
+                break;
+            }
+        }
 
-    //scoville에 있는 각각의 요소를 forEach를 이용하여 sorting 한다.
-    scoville.forEach(value => heap.push(value));
-
-    while(heap.heap[0] < K && heap.size() > 1) {
-        //첫번째 pop의 값과 두번째 pop의 2배의 합을 newfood 변수에 저장
-        const first_pop = heap.pop();
-        const second_pop = heap.pop();
-        const newfood = first_pop + (second_pop * 2);
-
-        //newfood를 다시 heap 트리에 삽입
-        heap.push(newfood);
-        //1번 루프를 돌 때마다 answer에 1 추가
-        answer++;
+        if(n1+n2*2 < K){
+            mixed.push(n1+n2*2)
+        }
+        else{
+            flag = 1 
+        }
+       ++cnt
     }
+    //if(mixed != [])
+    /*
+    가진 음식 스코빌을 하나씩 지우고 
+    새로운 음식 스코빌을 하나씩 추가해서 arr에 K보다 작으면 저장하기
+    두개의 배열을 다르게 유지해서 
+    가진읍식과 새로운 음식중 작은 것들 부터 먼저 n1,n2로 만든다
+    가진음식, 새로운 음식의 index가 합쳐서 1이라면 return 하기 그리고  flag ==1 이라면 ++cnt 해주고 끝내기 flag == 0 이라면 -1로 끝내기 
+    */
+    if(flag == 1){
+        return cnt 
+    }
+    else{
 
-    if(heap.heap[0] >= K) {
-        return answer;
-    } else {
-        return -1;
+        return -1
     }
 }
