@@ -21,9 +21,7 @@ function solution(scoville, K) {
     while (1) {
         if (mixed[m_i] != undefined) {
             if (under_K.length) {
-                if (under_K.at(-1) < mixed[m_i]) {
-                    min = under_K.pop()
-                } 
+                if (under_K.at(-1) < mixed[m_i]) min = under_K.pop()
                 else {
                     min = mixed[m_i]
                     m_i++
@@ -34,16 +32,12 @@ function solution(scoville, K) {
                 m_i++
             }
         }
-        else if (under_K.length) {
-            min = under_K.pop()
-        }
+        else if (under_K.length) min = under_K.pop()
         else break
         
         if (mixed[m_i] != undefined) {
             if (under_K.length) {
-                if (under_K.at(-1) < mixed[m_i]) {
-                    secondMin = under_K.pop()
-                } 
+                if (under_K.at(-1) < mixed[m_i]) secondMin = under_K.pop()
                 else {
                     secondMin = mixed[m_i]
                     m_i++
@@ -55,9 +49,7 @@ function solution(scoville, K) {
             }
         }
         else {
-            if (under_K.length) {
-                secondMin = under_K.pop()
-            }
+            if (under_K.length) secondMin = under_K.pop()
             else {
                 count++
                 break
@@ -67,9 +59,7 @@ function solution(scoville, K) {
         if(min+secondMin*2 < K){
             mixed.push(min+secondMin*2)
         }
-        else {
-            flag = 1
-        }
+        else flag = 1
 
         count++
         
