@@ -1,17 +1,13 @@
 const solution = (participant, completion) => {
-    const map = new Map();
-
-    for(let i = 0; i < participant.length; i++) {
-        let a = participant[i], 
-            b = completion[i];
-
-        map.set(a, (map.get(a) || 0) + 1);
-        map.set(b, (map.get(b) || 0) - 1);
+    const hash = new Map()
+    participant.forEach((val)=>{
+        hash.set(val, hash.get(val) ? hash.get(val) + 1 : 1)
+    })
+    completion.forEach(val=>{
+        hash.set(val, hash.get(val) - 1)
+    })
+    const iterator = hash[Symbol.iterator]()
+    for (const item of iterator) {
+        if (hash.get(item[0])) return item[0]
     }
-
-    for(let [k, v] of map) {
-        if(v > 0) return k;
-    }
-
-    return 'nothing';
 }
