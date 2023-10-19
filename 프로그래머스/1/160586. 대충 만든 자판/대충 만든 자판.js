@@ -1,20 +1,11 @@
 function solution(keymap, targets) {
-    let result = []
-    targets.forEach(t=>{
-        let sum = 0
-        for(let i=0;i<t.length;i++){
-            let min = Infinity
-            for(let j=0;j<keymap.length;j++){
-                let index = keymap[j].indexOf(t[i])
-                if (min > index && index != -1) min = index
-            }
-            if (min == Infinity) {
-                sum = -1
-                break
-            }
-            else sum += min + 1
-        }
-        result.push(sum)
-    })
-    return result
+    const answer = [];
+    const map = {}
+    for (const items of keymap) {
+        items.split('').map((item, index) => map[item] = (map[item] < index+1 ? map[item] : index+1))
+    }
+    for (const items of targets) {
+        answer.push(items.split('').reduce((cur, item) => cur += map[item], 0) || -1)
+    }
+    return answer;
 }
