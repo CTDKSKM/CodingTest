@@ -1,13 +1,13 @@
 function solution(n, lost, reserve) {
     let answer = n;
     
-    lost.sort((a,b)=>a-b)
-    reserve.sort((a,b)=>a-b)
+    lost.sort((a,b)=>a-b);
+    reserve.sort((a,b)=>a-b);
     
     lost.forEach((num,idx)=>{
         if (reserve.includes(num)) {
-            delete lost[idx]
-            delete reserve[reserve.indexOf(num)]
+            delete lost[idx];
+            delete reserve[reserve.indexOf(num)];
         }
     })
     
@@ -19,7 +19,7 @@ function solution(n, lost, reserve) {
             reserve[reserve.indexOf(num+1)] = '*';
         }
         else {
-            answer--
+            answer--;
         }
     })
     
