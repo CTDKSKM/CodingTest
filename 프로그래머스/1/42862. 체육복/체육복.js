@@ -1,15 +1,19 @@
 function solution(n, lost, reserve) {
+    let answer = n;
+    
     lost.sort((a,b)=>a-b)
     reserve.sort((a,b)=>a-b)
-    let answer = n;
+    
     lost.forEach((num,idx)=>{
         if (reserve.includes(num)) {
             lost[idx] = -1
             reserve[reserve.indexOf(num)] = -1
         }
     })
+    
     lost = lost.filter(val=>val!=-1)
     reserve = reserve.filter(val=>val!=-1)
+    
     lost.forEach(num=>{
         if (reserve.includes(num-1)) {
             reserve[reserve.indexOf(num-1)] = '*';
