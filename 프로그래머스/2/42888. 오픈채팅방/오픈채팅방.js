@@ -1,35 +1,24 @@
 function solution(record) {
-    const answer = [];
-    const user = {};
-
-    record.forEach(val=>{
-        const [action, uid, name] = val.split(' ')
-        switch (action) {
-            case 'Enter':
-                user[uid] = name
-                break
-            case 'Change':
-                user[uid] = name
-                break
-            default:
-                break
+    const splitRecord = [];
+    const uidNickname = {};
+    var answer = [];
+    record.forEach(r => {
+        const s = r.split(' ');
+        splitRecord.push([s[0], s[1]])
+        if(s[2]) {
+            uidNickname[s[1]] = s[2];
         }
-    })
-
-    record.forEach(val=>{
-        const [action, uid, name] = val.split(' ')
+    });
+    splitRecord.forEach(r => {
         let msg;
-        switch(action) {
-            case 'Enter':
-                msg = '님이 들어왔습니다.'
-                answer.push(`${user[uid]}${msg}`)
-                break
-            case 'Leave':
-                msg = '님이 나갔습니다.'
-                answer.push(`${user[uid]}${msg}`)
-                break
-            default:
-                break
+        if(r[0] === 'Enter') {
+            msg = '님이 들어왔습니다.'
+        }
+        else if(r[0] === 'Leave') {
+            msg =  '님이 나갔습니다.'
+        }
+        if(msg) {
+            answer.push(`${uidNickname[r[1]]}${msg}`);
         }
     })
 
