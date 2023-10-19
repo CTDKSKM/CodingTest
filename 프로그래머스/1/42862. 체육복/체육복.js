@@ -6,13 +6,10 @@ function solution(n, lost, reserve) {
     
     lost.forEach((num,idx)=>{
         if (reserve.includes(num)) {
-            lost[idx] = -1
-            reserve[reserve.indexOf(num)] = -1
+            delete lost[idx]
+            delete reserve[reserve.indexOf(num)]
         }
     })
-    
-    lost = lost.filter(val=>val!=-1)
-    reserve = reserve.filter(val=>val!=-1)
     
     lost.forEach(num=>{
         if (reserve.includes(num-1)) {
