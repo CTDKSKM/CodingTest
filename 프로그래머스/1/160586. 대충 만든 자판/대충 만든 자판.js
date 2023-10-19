@@ -1,26 +1,20 @@
 function solution(keymap, targets) {
-    var answer = [];
-    
-    targets.forEach(target=>{
-        let sum = 0;
-        let flag = true
-        
-        for(let i=0; i<target.length; i++) {
-            let temp = 0;
-            
-            keymap.forEach((key,idx)=>{
-                if (key.includes(target[i])) {
-                    if (temp == 0 || temp > key.indexOf(target[i]) + 1) {
-                        temp = key.indexOf(target[i]) + 1
-                    }
-                }
-            })
-            
-            temp ? sum+=temp : flag = false
+    let result = []
+    targets.forEach(t=>{
+        let sum = 0
+        for(let i=0;i<t.length;i++){
+            let min = Infinity
+            for(let j=0;j<keymap.length;j++){
+                let index = keymap[j].indexOf(t[i])
+                if (min > index && index != -1) min = index
+            }
+            if (min == Infinity) {
+                sum = -1
+                break
+            }
+            else sum += min + 1
         }
-        
-        flag ? answer.push(sum) : answer.push(-1)
+        result.push(sum)
     })
-    
-    return answer;
+    return result
 }
