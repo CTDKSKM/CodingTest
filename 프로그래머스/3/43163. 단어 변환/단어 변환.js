@@ -1,37 +1,46 @@
 function solution(begin, target, words) {
-    const seen = new Set();
-    const queue = [[begin, 0]];
-    let found = false;
-    let result;
+    const queue = [begin];
+    const visitArr = new Array(words.length).fill(false);
+    let ctr = 0;
+    let shiftedWord = begin;
+    let queueLeng = 1;
 
-    while (queue.length) {
-        const [currentWord, count] = queue.shift();
+    while(queue.length > 0) {
+        shiftedWord = queue.shift();
+        queueLeng--;
 
-        if (currentWord === target) {
-            found = true;
-            result = count;
-            break;
-        }
+        for(let i in words) {            
+            if(check(shiftedWord, words[i])) {
+                if(visitArr[i] == true) 
+                    continue;
 
-        for (let i = 0; i < words.length; i++) {
-            if (!seen.has(words[i])) {
-                let diff = 0;
-                for (let j = 0; j < target.length; j++) {
-                    if (currentWord[j] !== words[i][j]) {
-                        diff++;
-                    }
-                }
-                if (diff === 1) {
-                    seen.add(words[i]);
-                    queue.push([words[i], count + 1]);
-                }
+                if(words[i] == target)
+                    return ctr+1;
+
+                visitArr[i] = true;
+                queue.push(words[i]);
             }
         }
-    }
 
-    if (found) {
-        return result;
-    } else {
-        return 0;
+        if(queueLeng == 0) {
+            ctr++;
+            queueLeng = queue.length;
+        }
+    }
+    return 0;
+
+    function check(standard, word) {
+        let diffCtr = 0;
+
+        if(standard.length != word.length) 
+            return false;
+
+        for(let i=0; i<standard.length; i++) {
+            if(standard.charAt(i) != word.charAt(i))
+                diffCtr++;
+            if(diffCtr > 1)
+                return false;
+        }
+        return true;
     }
 }
