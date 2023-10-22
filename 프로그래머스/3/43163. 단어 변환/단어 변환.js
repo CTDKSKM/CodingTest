@@ -1,37 +1,49 @@
 function solution(begin, target, words) {
-    const seen = new Set();
-    const queue = [[begin, 0]];
-    let found = false;
-    let result;
+    var answer = 0;
 
-    while (queue.length) {
-        const [currentWord, count] = queue.shift();
+    let map = {};
+    [...words, begin].map(w => {
+        map[w] = [];
+        words.map(nw => {
+            if(canChange(w, nw)) {
+                map[w].push(nw);
+            }
+        });
+    });
 
-        if (currentWord === target) {
-            found = true;
-            result = count;
-            break;
-        }
+    let q = [begin];
+    let distance = {};
+    let visited = [begin];
+    distance[begin] = 0;
 
-        for (let i = 0; i < words.length; i++) {
-            if (!seen.has(words[i])) {
-                let diff = 0;
-                for (let j = 0; j < target.length; j++) {
-                    if (currentWord[j] !== words[i][j]) {
-                        diff++;
-                    }
+    while(q.length > 0) {
+        let word = q.shift();
+
+        for(let i=0; i<map[word].length; i++) {
+            let nei = map[word][i];
+            if(visited.indexOf(nei) <= -1) {
+                distance[nei] = distance[word] + 1;
+
+                if(target == nei){
+                    return distance[nei];
                 }
-                if (diff === 1) {
-                    seen.add(words[i]);
-                    queue.push([words[i], count + 1]);
-                }
+
+                visited.push(nei);
+                q.push(nei);
             }
         }
     }
 
-    if (found) {
-        return result;
-    } else {
-        return 0;
+    return answer;
+}
+
+function canChange(word, target) {
+    let diff = 0;
+    for(let i=0; i<word.length; i++) {
+        if(word.charAt(i) != target.charAt(i)){
+            diff++;
+        }
     }
+    if(diff == 1) return true;
+    return false;
 }
