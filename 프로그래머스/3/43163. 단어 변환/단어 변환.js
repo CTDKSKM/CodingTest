@@ -13,7 +13,7 @@ function solution(begin, target, words) {
         }
         for(let i=0; i<words.length; i++) {
             let temp = 0;
-            
+
             for(let j=0; j<target.length; j++) {
                 now[j] == words[i][j] ? temp++ : false
             }
@@ -27,5 +27,4 @@ function solution(begin, target, words) {
     }
     if (flag) return ans
     else return 0
-    
 }
