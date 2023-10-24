@@ -24,5 +24,5 @@ function dfs(node, computers, seen, n) {
 
 /*
 dfs.
-본 녀석은 넣어주고, 아니면 네트워크++, dfs 시작.
+안 본 녀석은 넣어주고, 네트워크++
 */
