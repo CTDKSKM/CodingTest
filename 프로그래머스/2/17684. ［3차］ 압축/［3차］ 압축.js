@@ -1,29 +1,19 @@
 function solution(msg) {
-    const answer = [];
-    const dictionary = new Map();
-    const alp = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-
-    [...alp].forEach((v, index) => {
-        dictionary.set(v, index + 1);
-    });
-
-    let temp = '';
-
-    for (let i = 0; i < msg.length; i++) {
-        temp += msg[i];
-
-        if (!dictionary.has(temp + msg[i + 1])) {
-            answer.push(dictionary.get(temp));
-            dictionary.set(temp + msg[i + 1], dictionary.size + 1);
-            temp = '';
-        }
+    const dict = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split('').reduce((dict, c, i) => {
+        dict[c] = i+1;
+        return dict;
+    }, {});
+    dict.nextId = 27;
+    const ans = [];
+    for(let i = 0, j = 0; i < msg.length; i = j){
+        j = msg.length;
+        let longest = '';
+        while(dict[(longest = msg.substring(i, j))] === undefined) --j;
+        ans.push(dict[longest]);
+        dict[longest + msg[j]] = dict.nextId++;
     }
 
-    if (temp !== '') {
-        answer.push(dictionary.get(temp));
-    }
-
-    return answer;
+    return ans;
 }
 /*
 있으면 붙이고, 없으면 출력하고 붙이고 셋.
