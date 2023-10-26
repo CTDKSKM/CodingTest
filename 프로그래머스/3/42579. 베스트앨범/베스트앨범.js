@@ -30,16 +30,14 @@ function solution(genres, plays) {
 
     const sortedGenres = Object.entries(genreMap)
         .sort((a, b) => b[1].sum - a[1].sum);
-    console.log(genreMap)
-    console.log(indexMap)
+
     sortedGenres.forEach(([genre]) => {
         answer.push(indexMap[genre].pop().index);
         if (indexMap[genre].length > 0) {
             answer.push(indexMap[genre].pop().index);
         }
     });
-    
-    console.log(sortedGenres)
+
     return answer
 }
 
