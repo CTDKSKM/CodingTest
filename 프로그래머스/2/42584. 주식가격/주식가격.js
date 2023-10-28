@@ -1,17 +1,28 @@
 function solution(prices) {
-    var answer = [];
-    for(let i=0; i<prices.length; i++) {
-        let sec = 0;
-        let flag = 0;
-        for(let j=i; j<prices.length; j++) {
-            if (prices[i] > prices[j]) {
-                flag = 1;
-                break
+    let stack = [];
+    let max = prices[0];
+    let answer = [];
+
+    prices.forEach((e,i)=>{
+
+        if(e >= max){
+            stack.push([e,i]);
+            max = e;
+        }else{
+            while(stack.length > 0 && stack[stack.length-1][0] > e){
+                const target = stack.pop();
+                answer[target[1]] = i-target[1];
             }
-            else sec++
+            stack.push([e,i]);
+            max = e;
         }
-        flag ? answer.push(sec) : answer.push(sec-1)
+    })
+
+    while(stack.length > 0){
+        const target = stack.pop();
+        answer[target[1]] = prices.length-target[1]-1;
     }
+
     return answer;
 }
 
