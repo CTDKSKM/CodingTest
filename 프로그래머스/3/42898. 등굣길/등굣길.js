@@ -15,8 +15,7 @@ function solution(m, n, puddles) {
             
             if (dp[i - 1][j] !== -1) val += dp[i - 1][j];
             if (dp[i][j - 1] !== -1) val += dp[i][j - 1];
-            
-            dp[i][j] = val % 1000000007;
+            dp[i][j] += val % 1000000007
         }
     }
 
