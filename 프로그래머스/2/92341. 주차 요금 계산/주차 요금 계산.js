@@ -3,6 +3,7 @@ function solution(fees, records) {
     const memo = new Map();
     const accFee = new Map();
     const isStayed = {};
+    
     records.forEach(record=>{
         const [time, carNum, sign] = record.split(" ")
 
@@ -18,12 +19,14 @@ function solution(fees, records) {
             isStayed[carNum] = false
         }
     })
+    
     Object.entries(isStayed).filter(val=>val[1]).forEach(([carNum]) => {
         const [inH, inM] = memo.get(carNum).split(":")
         const [outH, outM] = "23:59".split(":")
         const stayingTime = (outH - inH)*60 + (outM - inM)
         accFee.set(carNum, (accFee.get(carNum)||0) + stayingTime)
     })
+    
     return Array(...accFee).sort((a,b)=>Number(a[0])-Number(b[0])).map(([_,stayingTime])=>{
         let sum = basicFee;
         stayingTime -= basicTime;
