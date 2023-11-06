@@ -1,13 +1,20 @@
 function solution(skill, skill_trees) {
-    function isCorrect(n) {
-        let test = skill.split('');
-        for (var i = 0; i < n.length; i++) {
-            if (!skill.includes(n[i])) continue;
-            if (n[i] === test.shift()) continue;
-            return false;
-        }
-        return true;
-    }    
-
-    return skill_trees.filter(isCorrect).length;
+    var answer = 0;
+    return vaildSkillTree(skill, skill_trees);
 }
+
+
+const vaildSkillTree = (skillTree, usersSkillTrees)=>{
+
+    const onlYneedSkills = usersSkillTrees.map(it=>{
+        return it.split('').filter(ch => skillTree.includes(ch)).join('');
+    });
+
+    const filter = onlYneedSkills.map(element => {
+        if(element === '') return true
+        if(element[0] != skillTree[0]) return false
+        return skillTree.includes(element);
+    });
+
+    return filter.filter(it => it).length
+};
