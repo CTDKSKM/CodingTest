@@ -1,60 +1,23 @@
 function solution(files) {
-    function filename(){
-        this.head = [];
-        this.num = [];
-        this.tail = [];
+    let answerWrap = files.map((file, index) => ({file, index}));
+    const compare = (a, b) => {
+      const reg = /(\D*)([0-9]*)/i;
+      const A = a.match(reg);
+      const B = b.match(reg);
+      const compareHead = A[1].toLowerCase().localeCompare(B[1].toLowerCase());
+      const compareNumber = (a, b) => {
+         return parseInt(a) > parseInt(b) ? 
+            1 : parseInt(a) < parseInt(b) ? 
+             -1 
+            : 0
+      }
+      return compareHead === 0 ? compareNumber(A[2], B[2]) : compareHead
     }
-    var answer = []; 
-    var answer2=[];
-    var i=0,j=0,sw=0
-    var c=0,c1=0,c2=0;
-    for(i=files.length-1;i>=0;i--){
-        answer[i]=new filename;
-        for(j=0;j<files[i].length;j++){
-            if('0'<=files[i][j]&&files[i][j]<='9'){
-                if(sw==0){
-                    c1=j;
-                    answer[i].head=files[i].slice(0,j);
-                    sw=1;
-                }
-            }
-            else if(sw==1){
-                c2=j;
-                answer[i].num=files[i].slice(c1,j);
-                sw=2;
-            }
-        }
-        if(sw==1)
-            answer[i].num=files[i].slice(c1,j);
-        if(sw==2)
-            answer[i].tail=files[i].slice(c2,j);
-        sw=0;
-    }
-
-    var tm = new filename;
-    for(i=1;i<files.length;i++){
-        for(j=0;j<files.length-i;j++){
-            if(answer[j].head.toLowerCase()>answer[j+1].head.toLowerCase()){
-                tm=answer[j+1];
-                answer[j+1]=answer[j];
-                answer[j]=tm;
-            }
-            else if(answer[j+1].head.toLowerCase()==answer[j].head.toLowerCase()){
-                if(Number(answer[j].num)>Number(answer[j+1].num)){
-                    tm=answer[j+1];
-                    answer[j+1]=answer[j];
-                    answer[j]=tm;
-                }
-            }
-        }
-    }
-
-    //console.log(answer[2].head,answer[2].num,answer[2].tail);
-    for(i=0;i<files.length;i++)
-        answer2[i]=answer[i].head+answer[i].num+answer[i].tail;
-
-    //console.log(files.sort(/*(a,b) => (a-b)*/));
-    return answer2;
+    answerWrap.sort((a, b) => {
+      const result = compare(a.file, b.file);
+      return result === 0 ? a.index - b.index : result;
+    })
+    return answerWrap.map(answer => answer.file);
 }
 /*
 단순한 문자 코드 순이 아닌, 파일명에 포함된 숫자를 반영한 정렬 기능을 저장소 관리 프로그램에 구현하기로
