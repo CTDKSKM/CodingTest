@@ -1,23 +1,53 @@
 function solution(files) {
-    let answerWrap = files.map((file, index) => ({file, index}));
-    const compare = (a, b) => {
-      const reg = /(\D*)([0-9]*)/i;
-      const A = a.match(reg);
-      const B = b.match(reg);
-      const compareHead = A[1].toLowerCase().localeCompare(B[1].toLowerCase());
-      const compareNumber = (a, b) => {
-         return parseInt(a) > parseInt(b) ? 
-            1 : parseInt(a) < parseInt(b) ? 
-             -1 
-            : 0
-      }
-      return compareHead === 0 ? compareNumber(A[2], B[2]) : compareHead
-    }
-    answerWrap.sort((a, b) => {
-      const result = compare(a.file, b.file);
-      return result === 0 ? a.index - b.index : result;
-    })
-    return answerWrap.map(answer => answer.file);
+    const NUMBER = '0123456789'
+
+    files = files.map(v=>{
+        const result = []
+        let numIdx;
+
+        for(let i=0; i<v.length; i++) {
+            if (!result.length && NUMBER.includes(v[i])) {
+                numIdx = i
+                result.push(v.slice(0, i))
+            }
+            else if (result.length && !NUMBER.includes(v[i])) {
+                result.push(v.slice(numIdx, i))
+                result.push(v.slice(i))
+                break
+            }
+            else if (result.length && i == v.length-1) {
+                result.push(v.slice(numIdx, i+1))
+                break
+            }
+            else if (i - numIdx >= 5) {
+                result.push(v.slice(numIdx, i))
+                result.push(v.slice(i))
+                break
+            }
+
+
+        }
+
+        if (result.length == 1) result.push(v.slice(numIdx))
+
+        return result
+    }).sort((a,b)=>{
+        const a_h = a[0].toLowerCase()
+        const b_h = b[0].toLowerCase()
+        const a_n = Number(a[1])
+        const b_n = Number(b[1])
+
+        if (a_h > b_h) return 1
+        else if (a_h == b_h) {
+            if (a_n > b_n) return 1
+            else if (a_n == b_n) {
+                return 0
+            }
+            else return -1
+        }
+        else return -1
+    }).map(v=>v.join(''));
+    return files
 }
 /*
 단순한 문자 코드 순이 아닌, 파일명에 포함된 숫자를 반영한 정렬 기능을 저장소 관리 프로그램에 구현하기로
