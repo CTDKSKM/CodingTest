@@ -1,21 +1,18 @@
 function solution(order) {
-    let k = [], c = 1, count = 0
-    for(let i = 0; i < order.length; ++i){
-        let t = order[i]
-        if(k.length && k[k.length-1]==t){
-            k.pop()
-            ++count
-            continue
+    var answer = 0;
+    const sub = [];
+    let idx = 0;
+    let turn = 1;
+    while (turn <= order.length) {
+        sub.push(turn++);
+        while (sub.length > 0 && sub[sub.length - 1] === order[idx]) {
+            answer++;
+            sub.pop();
+            idx++;
+
         }
-        while(t!=c){
-            k.push(c)
-            ++c
-            if(c>order.length) return count
-        }
-        ++c
-        ++count
     }
-    return count
+    return answer;
 }
 /*
 
