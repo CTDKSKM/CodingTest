@@ -1,21 +1,15 @@
 function solution(ingredient) {
-    var answer = 0;
-    const breadBox = []
-    for(let i=0; i<ingredient.length-3; i++) {
-        const isBurger = 
-              '' + ingredient[i] + ingredient[i+1] + ingredient[i+2] + ingredient[i+3] == '1231' 
-                ? true 
-                : false
-        if (isBurger) {
+    let answer = 0
+    let stack = []
+    ingredient.forEach((inner)=>{
+        stack.push(inner)
+        const sLength = stack.length
+        if(stack[sLength-4] === 1 && stack[sLength-3] === 2 &&  stack[sLength-2] === 3 && stack[sLength-1] === 1){
+            for(let i=0;i<4;i++){
+                stack.pop()
+            }
             answer++
-            ingredient.splice(i, 4)
-            i=breadBox.pop() || 0
-            i--
-            continue
-        }
-        if (ingredient[i] == 1) {
-            breadBox.push(i)
-        }
-    }
-    return answer;
+         } 
+    })
+    return answer
 }
