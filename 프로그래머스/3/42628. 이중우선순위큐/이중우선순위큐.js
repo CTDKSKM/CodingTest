@@ -74,21 +74,23 @@ class MinHeap {
     }
 }
 
-function solution(arg) {
-    var list = [];
-    arg.forEach(t=>{
-        if(t[0] === 'I'){
-            list.push(+(t.split(" ")[1]));            
+function solution(operations) {
+    var answer = [];
+    let arr =[];
+    for(let i=0;i<operations.length;i++){
+        operation = operations[i].split(' ')
+
+        if(operation[0]==='I'){
+            arr.push(parseInt(operation[1]))
+        }else if(operation[1]=='1'){
+            arr.pop()
+        }else if(operation[1]=='-1'){
+            arr.shift()
         }
-        else{
-            if(!list.length) return;
-
-            var val = (t[2] === '-' ? Math.min : Math.max)(...list);
-            var delIndex = list.findIndex(t=> t ===  val);
-
-            list.splice(delIndex, 1);
-        }
-    })
-
-    return list.length ? [Math.max(...list), Math.min(...list)] : [0, 0];
+        arr.sort((a,b)=>a-b);
+    }
+    if(arr.length === 0) answer = [0,0];
+    else if (arr.length === 1) answer = [arr[0], arr[0]];
+    else answer = [arr.pop(),arr.shift()];
+    return answer;
 }
