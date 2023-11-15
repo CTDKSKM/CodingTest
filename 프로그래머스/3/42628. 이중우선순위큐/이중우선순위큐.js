@@ -74,16 +74,21 @@ class MinHeap {
     }
 }
 
-function solution(operations) {
-    const minHeap = new MinHeap();
-
-    operations.forEach((operation) => {
-        const [type, val] = operation.split(" ").map((v, i) => i === 1 ? Number(v) : v);
-        if (type === "I") {
-            minHeap.push(val);
-        } else {
-            minHeap.pop(val < 0);
+function solution(arg) {
+    var list = [];
+    arg.forEach(t=>{
+        if(t[0] === 'I'){
+            list.push(+(t.split(" ")[1]));            
         }
-    });
-    return minHeap.result();
+        else{
+            if(!list.length) return;
+
+            var val = (t[2] === '-' ? Math.min : Math.max)(...list);
+            var delIndex = list.findIndex(t=> t ===  val);
+
+            list.splice(delIndex, 1);
+        }
+    })
+
+    return list.length ? [Math.max(...list), Math.min(...list)] : [0, 0];
 }
