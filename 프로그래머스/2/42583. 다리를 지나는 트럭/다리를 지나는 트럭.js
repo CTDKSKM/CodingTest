@@ -1,18 +1,31 @@
-const solution = (bridgeLength, weight, truckWeights) => {
-  const progress = [];
-  let i = 1;
-  while(true) {
-    progress.map((item, j) => {
-      if(item.end === i) progress.splice(j, 1);
-    });
+function solution(b_len, max, waits) {
+    waits = waits.reverse().map(truck=>({weight:truck, time:b_len}));
+    let through = [];
+    let weight = {val: 0};
+    let cnt = 0;
 
-    if (progress.reduce((p, c) => p + c.weight, 0) + truckWeights[0] <= weight) {
-      progress.push({ end: i + bridgeLength, weight: truckWeights.shift() });
+    while(waits.length || through.length) {
+        if (waits.length && max >= weight.val + waits.at(-1).weight && b_len > through.length) {
+            const truck = waits.pop()
+            through.push(truck)
+            weight.val += truck.weight
+            through = move(through, weight)
+            cnt++
+        }
+        else {
+            through = move(through, weight)
+            cnt++
+        }
     }
-
-    if(!progress.length && !truckWeights.length) break;
-    i += 1;
-  }
-
-  return i;
-};
+    return cnt+1
+}
+function move(arr, weight) {
+    return arr.filter((truck)=>{
+                truck.time--
+                if (truck.time!==0) return true
+                else {
+                    weight.val -= truck.weight
+                    return false
+                }
+        })
+}
