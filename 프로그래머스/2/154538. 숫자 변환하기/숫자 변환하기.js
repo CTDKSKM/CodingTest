@@ -1,27 +1,24 @@
 function solution(x, y, n) {
-    let count = 0
-    let test = [x]
-
     if (x === y) return 0
+    const dp = {}
+    dp[x] = 0
+    let data = [x]
+    while(data.length) {
+        const newData = [];
+        for(const d of data) {
+            for(const e of [d+n, d*2, d*3]) {
 
-    while (true) {
-        count++
+                if (e > y || dp[e]) continue
+                if (e == y) return dp[d]+1
 
-        const set = new Set()
-        test.forEach(item => {
-            if (item + n <= y) set.add(item + n)
-            if (item * 2 <= y) set.add(item * 2)
-            if (item * 3 <= y) set.add(item * 3)
-        })
+                dp[e] = dp[d]+1;
 
-        if (set.size === 0) return -1
-
-        if (set.has(y)) {
-            return count
+                newData.push(e)
+            }
         }
-
-        test = set
+        data = newData
     }
+    return -1;
 }
 
 /*
