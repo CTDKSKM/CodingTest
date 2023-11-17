@@ -33,8 +33,3 @@ function solution(b_len, max, waits) {
     }
     return cnt+1
 }
-/*
-최소 몇초?
-bridge_length == 트럭 올라갈 수 있는 수
-
-*/
