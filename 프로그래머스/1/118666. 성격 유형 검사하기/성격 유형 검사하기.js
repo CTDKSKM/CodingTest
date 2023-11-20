@@ -1,35 +1,18 @@
 function solution(survey, choices) {
-    let answer = '';
-    const character = {
-        'RT':[0,0],
-        'CF':[0,0],
-        'JM':[0,0],
-        'AN':[0,0],
-    }
-    const check = ['RT','CF','JM','AN']
-    const left = 'RCJA'
-    const right = 'TFMN'
-    survey.forEach((char,choice)=>{
-        const [deny,allow] = char.split('')
-        if (choices[choice] > 4) {
-            const idx = check.map((c_case,idx)=>c_case.includes(allow) ? idx : -1).filter(v=>v!=-1)[0]
-            if (left.includes(allow)) character[check[idx]][0] += choices[choice] % 4
-            else character[check[idx]][1] += choices[choice] % 4 
-        }
-        else if (choices[choice] < 4) {
-            const idx = check.map((c_case,idx)=>c_case.includes(deny) ? idx : -1).filter(v=>v!=-1)[0]
-            if (left.includes(deny)) character[check[idx]][0] += (4-choices[choice])
-            else character[check[idx]][1] += (4-choices[choice])
-        }
-    })
-    for(const val in character) {
-        const [c1, c2] = character[val]
-        if (c1 >= c2) {
-            answer += val[0]
-        }
-        else answer += val[1]
-    }
-    return answer;
+    const MBTI = {};
+    const types = ["RT","CF","JM","AN"];
+
+    types.forEach((type) =>
+        type.split('').forEach((char) => MBTI[char] = 0)
+    )
+
+    choices.forEach((choice, index) => {
+        const [disagree, agree] = survey[index];
+
+        MBTI[choice > 4 ? agree : disagree] += Math.abs(choice - 4);
+    });
+
+    return types.map(([a, b]) => MBTI[b] > MBTI[a] ? b : a).join("");
 }
 
 /*
