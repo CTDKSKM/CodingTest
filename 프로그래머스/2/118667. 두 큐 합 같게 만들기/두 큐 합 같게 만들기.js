@@ -1,30 +1,22 @@
 function solution(queue1, queue2) {
-    let tried = 0, queueLength = queue1.length + queue2.length
-    let isFindSameQueue = false
-    let idx1 = 0, idx2 = 0
-    let queue1Sum = queue1.reduce((acc,val)=>acc+val,0)
-    let queue2Sum = queue2.reduce((acc,val)=>acc+val,0)
+    const L = queue1.reduce((a,c)=>a+c,0)
+    const R = queue2.reduce((a,c)=>a+c,0)
+    const arr = L > R ? queue2.concat(queue1) : queue1.concat(queue2)
+    const goal = arr.reduce((a,c)=>a+c,0) / 2
+    let left = 0;
+    let right = queue1.length-1;
+    let count = 0;
+    let sum = L > R ? R : L;
 
-    while(tried<queueLength * 2){
-        if(queue1Sum > queue2Sum){
-            const element = queue1[idx1++]
-            queue1Sum -= element
-            queue2Sum += element
-            queue2.push(element)
-        }
-        else if(queue1Sum < queue2Sum){
-            const element = queue2[idx2++]
-            queue1Sum += element
-            queue2Sum -= element
-            queue1.push(element)
-        }
-        else{
-            isFindSameQueue = true
-            break
-        }
-        tried++
+    while (count <= queue1.length*4) {
+        if (sum === goal) return count
+        
+        if (sum > goal) {sum-=arr[left++];}
+        else if (sum < goal) {sum+=arr[++right];}
+
+        count++
     }
-
-    return isFindSameQueue ? tried : -1;
+    
+    return -1;
 }
 
