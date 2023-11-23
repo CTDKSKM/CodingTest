@@ -1,28 +1,30 @@
 function solution(queue1, queue2) {
-    let sumQ1 = sum(queue1),
-        sumQ2 = sum(queue2);
+    let tried = 0, queueLength = queue1.length + queue2.length
+    let isFindSameQueue = false
+    let idx1 = 0, idx2 = 0
+    let queue1Sum = queue1.reduce((acc,val)=>acc+val,0)
+    let queue2Sum = queue2.reduce((acc,val)=>acc+val,0)
 
-    let pointer1 = 0, 
-        pointer2 = queue1.length;
-
-    const target = (sumQ1 + sumQ2) / 2;
-    const queue = [...queue1, ...queue2];
-
-    const end = queue1.length * 3;
-
-    for (let count = 0; count < end; count++) {
-        if (sumQ1 === target) {
-            return count;
+    while(tried<queueLength * 2){
+        if(queue1Sum > queue2Sum){
+            const element = queue1[idx1++]
+            queue1Sum -= element
+            queue2Sum += element
+            queue2.push(element)
         }
-
-        if (sumQ1 > target) {
-            sumQ1 -= queue[pointer1++];
-        } else {
-            sumQ1 += queue[pointer2++];
+        else if(queue1Sum < queue2Sum){
+            const element = queue2[idx2++]
+            queue1Sum += element
+            queue2Sum -= element
+            queue1.push(element)
         }
+        else{
+            isFindSameQueue = true
+            break
+        }
+        tried++
     }
 
-    return -1;
+    return isFindSameQueue ? tried : -1;
 }
 
-const sum = (arr) => arr.reduce((acc, v) => acc + v, 0);
