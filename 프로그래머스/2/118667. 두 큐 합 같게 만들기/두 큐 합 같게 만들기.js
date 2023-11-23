@@ -7,18 +7,25 @@ function solution(queue1, queue2) {
     let right = queue1.length-1;
     let count = 0;
     let sum = 0;
-    
+
     for (let i = left; i<=right; i++) {
         sum += arr[i]
     }
-    
+
     while (count <= queue1.length*4) {
         if (sum === goal) return count
-        else if (sum > goal) {arr.push(arr[left]);sum-=arr[left];left++}
-        else if (sum < goal) {sum+=arr[++right];}
         
+        if (sum > goal) {
+            arr.push(arr[left]);
+            sum-=arr[left++];
+        }
+        else if (sum < goal) {
+            sum+=arr[++right];
+        }
+
         count++
     }
+    
     return -1;
 }
 
