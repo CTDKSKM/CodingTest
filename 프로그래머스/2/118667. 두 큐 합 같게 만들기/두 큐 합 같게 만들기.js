@@ -1,33 +1,28 @@
 function solution(queue1, queue2) {
-    const L = queue1.reduce((a,c)=>a+c,0)
-    const R = queue2.reduce((a,c)=>a+c,0)
-    const arr = L > R ? queue2.concat(queue1) : queue1.concat(queue2)
-    const goal = arr.reduce((a,c)=>a+c,0) / 2
-    let left = 0;
-    let right = queue1.length-1;
-    let count = 0;
-    let sum = 0;
+    let sumQ1 = sum(queue1),
+        sumQ2 = sum(queue2);
 
-    for (let i = left; i<=right; i++) {
-        sum += arr[i]
-    }
+    let pointer1 = 0, 
+        pointer2 = queue1.length;
 
-    while (count <= queue1.length*4) {
-        if (sum === goal) return count
-        
-        if (sum > goal) {
-            sum -= arr[left++]
-        }
-        else if (sum < goal) {
-            sum += arr[++right]
+    const target = (sumQ1 + sumQ2) / 2;
+    const queue = [...queue1, ...queue2];
+
+    const end = queue1.length * 3;
+
+    for (let count = 0; count < end; count++) {
+        if (sumQ1 === target) {
+            return count;
         }
 
-        count++
+        if (sumQ1 > target) {
+            sumQ1 -= queue[pointer1++];
+        } else {
+            sumQ1 += queue[pointer2++];
+        }
     }
-    
+
     return -1;
 }
 
-/*
-
-*/
+const sum = (arr) => arr.reduce((acc, v) => acc + v, 0);
