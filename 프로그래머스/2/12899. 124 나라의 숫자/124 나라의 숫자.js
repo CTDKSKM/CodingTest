@@ -1,14 +1,9 @@
 function solution(n) {
-    const answer = [];
+    let answer = '';
+    const arr = [4,1,2]
     while(n>0) {
-        if (n%3===0) {
-            answer.push(4)
-            n = Math.floor(n/3) - 1
-        }
-        else {
-            answer.push(n%3)
-            n = Math.floor(n/3)
-        }
+        answer = arr[n%3] + answer
+        n = Math.floor( (n-1) / 3 )
     }
-    return answer.reverse().join('')
+    return answer
 }
