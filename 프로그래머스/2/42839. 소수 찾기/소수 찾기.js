@@ -1,33 +1,29 @@
 function solution(numbers) {
-    const result = new Set();
-    const used = Array(numbers.length).fill(false);
-    
-    for(let i=1; i<=numbers.length; i++) {
-        permutation(0, result, numbers, "", i, used)
-    }
-    
-    return Array.from(result).filter(num => checkPrime(parseInt(num))).length;
+    var answer = 0;
+    var set = new Set();
+    makeNumbers(set , '' , numbers.split(''));
+    return set.size;
 }
-function checkPrime(number) {
-    if (number <= 1) return false
-    for(let i=2; i*i<=number; i++) {
-        if(number % i == 0) return false
+
+function issosu(num) {
+    if( num < 2) return false;
+    for (var i =2; i <= num / 2 ; i++) {
+        if( num % i === 0) return false;
     }
-    return true
+    return true;
 }
-function permutation(count, result, str, temp, length, used) {
-    if (count == length) {
-        result.add(parseInt(temp))
-        return
-    }
-    
-    for(let i=0; i<str.length; i++) {
-        if (used[i]) continue;
-        used[i] = true;
-        permutation(count+1, result, str, temp+str[i], length, used);
-        used[i] = false
-    }
+
+function makeNumbers(set , cur, nums) {
+    if( nums.length === 0 ) return;
+    var clone = nums.slice().reverse();
+    nums.forEach(function(i) {
+        var su = clone.pop();
+        var num = Number(cur+su);
+        if ( issosu(num)) {
+            set.add(num);
+        }
+
+        makeNumbers(set, cur+su , clone);
+        clone.unshift(su);
+    }) 
 }
-/*
-조합 -> 완전탐색
-*/
