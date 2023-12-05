@@ -1,17 +1,20 @@
 function solution(numbers) {
-    return numbers.map((x)=>{
-        if(x&1) {
-            var binary = ["0", ...x.toString(2).split("")];
-            for(var i = binary.length-1; i >= 0; i--) {
-                if(binary[i] == "0") {
-                    binary[i] = "1";
-                    binary[i+1] = "0";
-                    break;
-                }
+  var answer = [];
+  let c;
+  numbers.forEach(v => {
+    if (v < 2 || v % 2 === 0) {
+        answer.push(v+1);
+    } else {
+        let c = 2;
+        while(true) {
+            if ((v + 1) % (c * 2) === 0) {
+                c = c * 2;
+            } else {
+                break;
             }
-            return parseInt(binary.join(""), 2);
-        } else {
-            return x+1;
-        }
-    });
+        };
+        answer.push(v + (c / 2));
+    }
+  });
+  return answer;
 }
