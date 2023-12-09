@@ -1,7 +1,4 @@
 function solution(bandage, health, attacks) {
-    //bandage = 시전시간t, 초당 회복량x, t초 연속시 추가회복량y
-    //health = MAXHP
-    //attacks = 공격시간, 피해량
     const [t, x, y] = bandage
     attacks.reverse();
     let time = 0;
@@ -26,7 +23,9 @@ function solution(bandage, health, attacks) {
     }
     return hp;
 }
-
+//bandage = 시전시간t, 초당 회복량x, t초 연속시 추가회복량y
+//health = MAXHP
+//attacks = 공격시간, 피해량
 /*
 t초 x피회복 if 연속=>+y
 max >= 피
