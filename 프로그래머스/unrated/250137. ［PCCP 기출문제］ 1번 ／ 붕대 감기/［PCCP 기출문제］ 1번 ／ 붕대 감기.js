@@ -1,27 +1,18 @@
 function solution(bandage, health, attacks) {
-    const [t, x, y] = bandage
-    attacks.reverse();
-    let time = 0;
-    let success = 0;
-    let hp = health
-    while (attacks.length && time <= attacks[0][0]) {
-        const [att_time, damage] = attacks.pop()
-        while(time < att_time) {
-            time++
-            success++
-            hp += x
-            if (success == t) {
-                success = 0
-                hp += y
-            }
-            if (hp > health) hp = health
-        }
-        time++
-        hp -= damage
-        success = 0
-        if (hp <= 0) return -1
-    }
-    return hp;
+  let currHealth = health;
+  let currTime = 0;
+
+  for (let [attackTime, damage] of attacks) {
+    let diffTime = attackTime - currTime - 1;
+    currHealth += diffTime * bandage[1] + Math.floor(diffTime / bandage[0]) * bandage[2];
+
+    if (currHealth > health) currHealth = health;
+    currHealth -= damage;
+    if (currHealth <= 0) return -1;
+    currTime = attackTime;
+  }
+
+  return currHealth;
 }
 //bandage = 시전시간t, 초당 회복량x, t초 연속시 추가회복량y
 //health = MAXHP
