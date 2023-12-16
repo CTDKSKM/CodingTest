@@ -1,8 +1,6 @@
 function solution(sequence, k) {
     let answer = [0, sequence.length - 1];
-    let sum = 0;
-    let left = 0;
-    let right = 0;
+    let [sum, left, right] = [0, 0, 0];
 
     for (let i = 0; i < sequence.length; i++) {
         const num = sequence[i];
