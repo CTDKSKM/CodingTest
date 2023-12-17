@@ -1,15 +1,13 @@
 function solution(gems) {
     let answer = [1, gems.length];
-    const total = new Set();
+    const total = new Set(gems).size;
     const now = new Map();
     let [left, right] = [1, 1];
-    
-    gems.forEach(gem=>total.add(gem));
-    
+        
     for(let i=0; i<gems.length; i++) {
         now.has(gems[i]) ? now.set(gems[i], [...now.get(gems[i]), i]) : now.set(gems[i], [i])
         right = i+1;
-        if (now.size == total.size) {
+        if (now.size == total) {
             while(now.get(gems[left-1]).length > 1) {
                 now.set(gems[left-1], now.get(gems[left-1]).slice(1))
                 left+=1;
