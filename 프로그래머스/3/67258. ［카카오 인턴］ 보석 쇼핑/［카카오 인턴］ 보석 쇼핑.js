@@ -1,0 +1,31 @@
+function solution(gems) {
+    let answer = [1, gems.length];
+    const total = new Set();
+    const now = new Map();
+    let [left, right] = [1, 1];
+    
+    gems.forEach(gem=>total.add(gem));
+    
+    for(let i=0; i<gems.length; i++) {
+        now.has(gems[i]) ? now.set(gems[i], [...now.get(gems[i]), i]) : now.set(gems[i], [i])
+        right = i+1;
+        if (now.size == total.size) {
+            while(now.get(gems[left-1]).length > 1) {
+                now.set(gems[left-1], now.get(gems[left-1]).slice(1))
+                left+=1;
+            }
+            const bestLength = answer[1] - answer[0];
+            const currentLength = right - left;
+            if (bestLength > currentLength) {
+                answer = [left, right];
+            }
+        }
+    }
+    
+    return answer;
+}
+
+/*
+진열된 모든 종류의 보석을 적어도 1개 이상 포함하는 가장 짧은 구간을 찾아서 구매
+슬라이딩윈도우
+*/
