@@ -4,21 +4,22 @@ function solution(gems) {
     const now = new Map();
     let [left, right] = [1, 1];
         
-    for(let i=0; i<gems.length; i++) {
-        now.has(gems[i]) ? now.set(gems[i], [...now.get(gems[i]), i]) : now.set(gems[i], [i])
-        right = i+1;
-        if (now.size == total) {
-            while(now.get(gems[left-1]).length > 1) {
-                now.set(gems[left-1], now.get(gems[left-1]).slice(1))
-                left+=1;
+    gems.forEach((gem, i) => {
+        now.set(gem, (now.get(gem) || []).concat(i));
+        right = i + 1;
+        
+        if (now.size === total) {
+            while (now.get(gems[left - 1]).length > 1) {
+                now.set(gems[left - 1], now.get(gems[left - 1]).slice(1));
+                left += 1;
             }
-            const bestLength = answer[1] - answer[0];
+            
             const currentLength = right - left;
-            if (bestLength > currentLength) {
+            if (answer[1] - answer[0] > currentLength) {
                 answer = [left, right];
             }
         }
-    }
+    });
     
     return answer;
 }
