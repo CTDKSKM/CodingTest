@@ -1,69 +1,41 @@
-
 function solution(m, n, board) {
-    let answer = 0;
-    board = board.map((val)=>{
-        const valArr = []
-        val.split('').forEach(name=>valArr.push({name, check:false}))
-        return valArr
-    })
+    board = board.map(v => v.split(''));
+
     while (true) {
-        for(let i=0; i<m; i++) {
-            for(let j=0; j<n; j++) {
-                if (board[i][j]!=='*') checker(i, j, board)
+        let founded = [];
+
+        // 찾기
+        for (let i = 1; i < m; i++) {
+            for (let j = 1; j < n; j++) {
+                if (board[i][j] && board[i][j] === board[i][j - 1] && board[i][j] === board[i - 1][j - 1] && board[i][j] === board[i - 1][j]) {
+                    founded.push([i, j]);
+                }
             }
         }
-        let temp = 0;
-        board = board.map(row=>{
-            return row.map(obj=>{if (obj.check) {temp++;return '*'}; return obj})
-        })
-        fill(m, n, board)
 
-        if (!temp) break
-    }
-    
-    board.forEach(val=>{
-        val.forEach(obj=>{
-            obj == '*' ? answer++ : null
-        })
-    })
-    return answer;
-}
-function checker(i, j, board) {
-    const now = board[i][j]
-    let topLeft = ['*', '*', '*']
-    if (i>0 && j>0) {
-        topLeft = [board[i-1][j], board[i-1][j-1], board[i][j-1]]
-    }
-    let topRight = ['*', '*', '*']
-    if (i>0 && j<board[0].length-1) {
-        topRight = [board[i-1][j], board[i-1][j+1], board[i][j+1]]
-    }
-    let bottomLeft = ['*', '*', '*']
-    if (i<board.length-1 && j>0) {
-        bottomLeft = [board[i+1][j], board[i+1][j-1], board[i][j-1]]
-    }
-    let bottomRight = ['*', '*', '*']
-    if (i<board.length-1 && j<board[0].length-1) {
-        bottomRight = [board[i+1][j], board[i+1][j+1], board[i][j+1]]
-    }
-    const arr = [topLeft, topRight, bottomLeft, bottomRight]
-    for(let k=0; k<arr.length; k++) {
-        const same = arr[k].filter(dir=>dir.name==now.name)
-        if (same.length == 3) {
-            now.check = true
-            break
-        }
-    }
-}
-function fill(m, n, board) {
-    for (let j = 0; j < n; j++) {
+        if (! founded.length) return [].concat(...board).filter(v => ! v).length;
+
+        // 부수기
+        founded.forEach(a => {
+            board[a[0]][a[1]] = 0;
+            board[a[0]][a[1] - 1] = 0;
+            board[a[0] - 1][a[1] - 1] = 0;
+            board[a[0] - 1][a[1]] = 0;
+        });
+
+        // 재정렬
         for (let i = m - 1; i > 0; i--) {
-            if (board[i][j] === '*' && board[i-1][j] !== '*') {
-                board[i][j] = board[i-1][j];
-                board[i-1][j] = '*';
-                i = m; // 다시 위로 올라가서 검사하기 위해
+            if (! board[i].some(v => ! v)) continue;
+
+            for (let j = 0; j < n; j++) {
+                for (let k = i - 1; k >= 0 && ! board[i][j]; k--) {
+                    if (board[k][j]) {
+                        board[i][j] = board[k][j];
+                        board[k][j] = 0;
+                        break;
+                    }
+                }
             }
         }
     }
 }
-
