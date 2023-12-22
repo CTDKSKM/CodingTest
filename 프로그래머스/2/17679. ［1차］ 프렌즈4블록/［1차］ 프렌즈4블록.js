@@ -17,7 +17,7 @@ function solution(m, n, board) {
             return row.map(obj=>{if (obj.check) {temp++;return '*'}; return obj})
         })
         fill(m, n, board)
-        console.log(temp)
+
         if (!temp) break
     }
     
