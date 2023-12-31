@@ -11,20 +11,11 @@ function solution(p) {
 }
 
 function split(p) {
-    const stack = [p[0]]
-    const pair = {
-        ')' : '(',
-        '(' : ')'
-    }
-    for(let i=1; i<p.length; i++) {
-        if (p[i] === pair[stack.at(-1)]) {
-            stack.pop()
-            if (!stack.length) {
-                return [p.slice(0, i+1), p.slice(i+1)]
-            }
-        }
-        else {
-            stack.push(p[i])
-        }
-    }
+    let [cnt, idx] = [0, 0]
+
+    do {
+        cnt += (p[idx++] === ')' ? -1 : 1);
+    } while (cnt !== 0)
+        
+    return [p.slice(0, idx), p.slice(idx)]
 }
