@@ -1,16 +1,13 @@
-function solution(p) {
+const solution = (p) => {
     if (!p) return ''
-    const change = {
-        ')' : '(',
-        '(' : ')',
-    }
+    
     let [u, v] = split(p)
     
     if (u[0] == '(') return u + solution(v)
-    else return '(' + solution(v) + ')' + [...u.slice(1,-1)].map(val=>change[val]).join('')
+    else return '(' + solution(v) + ')' + change(u)
 }
 
-function split(p) {
+const split = (p) => {
     let [cnt, idx] = [0, 0]
 
     do {
@@ -19,3 +16,5 @@ function split(p) {
         
     return [p.slice(0, idx), p.slice(idx)]
 }
+    
+const change = (u) => [...u.slice(1,-1)].map(val=>val === ')' ? '(' : ')').join('')
