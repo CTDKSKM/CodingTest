@@ -1,28 +1,13 @@
 function solution(n) {
-    const arr = []
-    const direction = [[1,0],[0,1],[-1,-1]]
-    let sign = 0
-    let now = [-1, 0]
-    let count = 1
-    
-    for(let i=1; i<=n; i++) {
-        arr.push(Array.from({length: i}, ()=>0))
-    }
-    
-    for(let i=arr.length; i>0; i--) {
-        for(let j=0; j<i; j++) {
-            const [dx, dy] = direction[sign%3]
-            now[0] += dx
-            now[1] += dy
-            const [x, y] = now
-            arr[x][y] = count++
-        }
-        sign++
-    }
-
-    return arr.flat();
+  let a = Array(n).fill().map((_, i) => Array(i + 1).fill())
+  let row = -1
+  let col = 0
+  let fill = 0
+  for (let i = n; i > 0; i -= 3) {
+    a[++row][col] = ++fill
+    for (let j = 0; j < i - 1; j++) a[++row][col] = ++fill
+    for (let j = 0; j < i - 1; j++) a[row][++col] = ++fill
+    for (let j = 0; j < i - 2; j++) a[--row][--col] = ++fill
+  }
+  return a.flat()
 }
-
-/*
-to bottom => to right => to top => to bottom => ...
-*/
