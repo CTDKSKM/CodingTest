@@ -1,29 +1,20 @@
 function solution(n) {
-    const answer = Array(n).fill().map((_, i) => Array(i + 1).fill(0));
+    const arr = Array(n).fill().map((_,idx)=>Array(idx+1).fill(0))
+    const direction = [[1,0],[0,1],[-1,-1]]
+    let sign = 0
+    let now = [-1, 0]
+    let count = 1
 
-    const size = n * (n + 1) / 2;
-
-    let [i, j, count] = [0, 0, 1];
-
-    while (count <= size) {
-        while (i < n && !answer[i][j]) {
-            answer[i++][j] = count++;
+    for(let i=arr.length; i>0; i--) {
+        for(let j=0; j<i; j++) {
+            const [dx, dy] = direction[sign%3]
+            now[0] += dx
+            now[1] += dy
+            const [x, y] = now
+            arr[x][y] = count++
         }
-
-        i--, j++;
-
-        while (j < n && !answer[i][j]) {
-            answer[i][j++] = count++;
-        }
-
-        i--, j -= 2;
-
-        while (i > 0 && j > 0 && !answer[i][j]) {
-            answer[i--][j--] = count++;
-        }
-
-        i += 2, j++;
+        sign++
     }
 
-    return answer.flat();
+    return arr.flat();
 }
