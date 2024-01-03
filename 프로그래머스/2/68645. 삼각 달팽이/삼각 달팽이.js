@@ -1,38 +1,24 @@
-const DOWN = 0
-const RIGHT = 1
-const UP = 2
-
 function solution(n) {
-    var answer = [];
+    const arr = []
+    const direction = [[1,0],[0,1],[-1,-1]]
+    let sign = 0
+    let now = [-1, 0]
+    let count = 1
 
-    var obj = {}
-    let runnable = (len, rootIdx, init) => {
-        if (init > n * (n + 1) / 2 || len < 1 || rootIdx > n) return
-
-        let count = 2 * len - 1
-        for(var i = 0; i < count; i++) {
-            if (i < len) {
-                if (!obj[rootIdx + i]) { obj[rootIdx + i] = [i + init]} 
-                else { obj[rootIdx + i].push(i + init)}
-            } else {
-                obj[rootIdx + len - 1].push(i + init)
-            }
-        }
-
-        runnable(len - 3, rootIdx + 2, init + 3 * (len - 1))
-
-        for(var i = 1; i <= len - 2; i++) {
-            obj[rootIdx + len - 1 - i].push(init + count - 1 + i)
-        }
+    for(let i=1; i<=n; i++) {
+        arr.push(Array(i).fill(0))
     }
 
-    runnable(n, 1, 1)
+    for(let i=n; i>0; i--) {
+        for(let j=0; j<i; j++) {
+            const [dx, dy] = direction[sign%3]
+            now[0] += dx
+            now[1] += dy
+            const [x, y] = now
+            arr[x][y] = count++
+        }
+        sign++
+    }
 
-    Object.keys(obj).map(key => obj[key].map(a => answer.push(a)))
-
-    return answer;
-}
-
-function make_list(n) {
-   return Array.from({length: n}).map((_,i) => 0)
+    return arr.flat();
 }
