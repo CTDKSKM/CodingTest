@@ -1,5 +1,5 @@
 function solution(n) {
-    const arr = Array(n).fill().map((_,idx)=>Array(idx+1).fill(0))
+    const arr = Array.from({ length: n }, () => []);
     const direction = [[1,0],[0,1],[-1,-1]]
     let sign = 0
     let now = [-1, 0]
