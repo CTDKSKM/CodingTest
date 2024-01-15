@@ -1,49 +1,49 @@
 function solution(orders, course) {
     const answer = [];
-    course.forEach((needNum, comboIndex)=>{
-        const tempArr = []
+
+    course.forEach(needNum => {
         const dict = {};
-        const len = orders.length
+        const len = orders.length;
         let max = 2;
-        
-        for(let i=0; i<len; i++) {
-            const baseStr = [...orders[i]].sort().join('')
-            if (baseStr.length < needNum) continue
-            const temp = []
-            const seen = Array(baseStr.length).fill(false)
-            
-            const mix = dfs(0, needNum, '', baseStr, seen, temp, 0)
-            tempArr.push(temp)
+
+        orders.forEach(order => {
+            const baseStr = [...order].sort();
+            if (baseStr.length < needNum) return;
+
+            const temp = [];
+            const seen = Array(baseStr.length).fill(false);
+
+            dfs(0, needNum, '', baseStr, seen, temp, 0);
+            temp.forEach(combo => {
+                dict[combo] ? dict[combo].push(order) : dict[combo] = [order];
+            });
+        });
+
+        for (const combo in dict) {
+            max = Math.max(max, dict[combo].length);
         }
-        tempArr.forEach((possibleCombo)=>{
-            possibleCombo.forEach((combo,idx)=>{
-                dict[combo] ? dict[combo].push(idx) : dict[combo] = [idx]
-            })
-        })
-        for(const combo in dict) {
-            max = Math.max(max, dict[combo].length)
+
+        for (const combo in dict) {
+            if (dict[combo].length === max && dict[combo].length > 1) {
+                answer.push(combo);
+            }
         }
-        for(const combo in dict) {
-            if (dict[combo].length === max) answer.push(combo)
-        }
-    })
-    return answer.sort()
+    });
+
+    return answer.sort();
 }
+
 function dfs(n, targetNum, str, baseStr, seen, temp, now) {
     if (n === targetNum) {
-        return temp.push(str)
+        temp.push(str);
+        return;
     }
-    
-    for(let i=now; i<baseStr.length; i++) {
-        if (seen[i]) continue
-        
-        seen[i] = true
-        dfs(n+1, targetNum, str+baseStr[i], baseStr, seen, temp, i)
-        seen[i] = false
+
+    for (let i = now; i < baseStr.length; i++) {
+        if (seen[i]) continue;
+
+        seen[i] = true;
+        dfs(n + 1, targetNum, str + baseStr[i], baseStr, seen, temp, i);
+        seen[i] = false;
     }
 }
-/*
-orders.length = 사람수,
-orders[i] = menu
-course = 원하는 콤보 수
-*/
