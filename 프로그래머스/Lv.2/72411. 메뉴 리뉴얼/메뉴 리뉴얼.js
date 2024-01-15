@@ -24,7 +24,7 @@ function solution(orders, course) {
         }
 
         for (const combo in dict) {
-            if (dict[combo].length === max && dict[combo].length > 1) {
+            if (dict[combo].length === max) {
                 answer.push(combo);
             }
         }
