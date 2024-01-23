@@ -12,10 +12,10 @@ function solution(m, musicinfos) {
         }
         
         return [idx,playTime,name,checkMelody(m,playedMelody)]
-    })
+    }).filter(val=>val[3])
     
-    if (musicinfos.filter(val=>val[3]).length) 
-        return musicinfos.filter(val=>val[3]).sort((a,b)=>b[1]-a[1])[0][2]
+    if (musicinfos.length) 
+        return musicinfos.sort((a,b)=>b[1]-a[1])[0][2]
     
     return '(None)'
 }
@@ -35,12 +35,6 @@ function calcTime(start,end) {
 }
 
 function checkMelody(memo, melody) {
-    let flag = false
-    let len = memo.length
-    melody.forEach((str,idx)=>{
-        if (str === memo[0]) {
-            if (melody.slice(idx,idx+len).join('') === memo.join('')) flag = true
-        }
-    })
-    return flag
+    let len = memo.length;
+    return melody.some((str, idx) => str === memo[0] && melody.slice(idx, idx + len).join('') === memo.join(''));
 }
