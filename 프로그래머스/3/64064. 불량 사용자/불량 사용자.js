@@ -1,47 +1,54 @@
-const isPossible = (bannedId, userId) => {
-    if (userId.length !== bannedId.length) return false;
-    for (let i = 0; i < bannedId.length; i++) {
-        if (bannedId[i] === '*' || bannedId[i] === userId[i]) continue;
-        return false
-    }
-    return true;
+const solution = (user_id, banned_id) => {
+  return numberOfCases(
+    getUsedIdObject(user_id),
+    new Set(),
+    0,
+    getBannedList(user_id, banned_id),
+    []
+  );
 };
 
-const createIdInfos = (userIds, bannedIds, isPossible) => {
-    const result = new Array(bannedIds.length).fill(null).map(el => new Set());
-
-    for (const bIdx in bannedIds) {
-        for (const uIdx in userIds) {
-            if (!isPossible(bannedIds[bIdx], userIds[uIdx])) continue;
-            if (result[bIdx].has(uIdx)) continue;
-            result[bIdx].add(uIdx);
-        }
-    }
-    return result;
+const isPossible = (user_id, banned_id) => {
+  if (user_id.length != banned_id.length) return false;
+  for (let i = 0; i < user_id.length; i++) {
+    if (banned_id[i] != "*" && user_id[i] != banned_id[i]) return false;
+  }
+  return true;
 };
 
-const getCount = (idInfos, bIdx = 0, idVisited = [], caseVisited = new Set()) => {
-    if (bIdx === idInfos.length) {
-        const visit = idVisited.reduce((acc, visited, i) => {
-            if (!visited) return acc;
-            return acc + i;
-        }, '');
-        if (caseVisited.has(visit)) return 0;
-        caseVisited.add(visit);
-        return 1;//visit.length === idInfos.length ? 1 : 0;
-    }
-
-    let result = 0;
-    for (const uIdx of idInfos[bIdx]) {
-        if (idVisited[uIdx]) continue;
-        idVisited[uIdx] = true;
-        result += getCount(idInfos, bIdx + 1, idVisited, caseVisited);
-        idVisited[uIdx] = false;
-    }
-    return result;
+const getBannedList = (user_id, banned_id) => {
+  return banned_id.reduce((bannnedList, banned) => {
+    return bannnedList.concat([
+      user_id.reduce((userList, user) => {
+        return isPossible(user, banned) ? [...userList, user] : userList;
+      }, []),
+    ]);
+  }, []);
 };
 
-const solution = (userIds, bannedIds) => {
-    const idInfos = createIdInfos(userIds, bannedIds, isPossible);
-    return getCount(idInfos);
+const getUsedIdObject = (user_id) => {
+  return user_id.reduce((obj, id) => {
+    obj[id] = obj[id] || false;
+    return obj;
+  }, {});
 };
+
+function numberOfCases(isUsed, banneds, index, banned_id, id) {
+  if (id.length == banned_id.length) {
+    banneds.add(id.sort().join(""));
+    return;
+  }
+  for (let i = index; i < banned_id.length; i++) {
+    for (let j = 0; j < banned_id[i].length; j++) {
+      const banned = banned_id[i][j];
+      if (isUsed[banned]) continue;
+      id.push(banned);
+      isUsed[banned] = true;
+      numberOfCases({ ...isUsed }, banneds, i + 1, banned_id, [...id]);
+      isUsed[banned] = false;
+      id.pop();
+    }
+  }
+
+  return [...banneds].length;
+}
