@@ -1,34 +1,47 @@
-const isUsed = {}
-const usedSets = new Set();
-const current = [];
-
-function solution(user_id, banned_id, bannedIdx = 0) {
-    const bannedLen = banned_id.length;
-    if (bannedIdx === bannedLen) {
-        const sorted = current.slice().sort().toString();
-        if (usedSets.has(sorted)) {
-            return 0;
-        }
-
-        usedSets.add(sorted);
-        return 1;
+const isPossible = (bannedId, userId) => {
+    if (userId.length !== bannedId.length) return false;
+    for (let i = 0; i < bannedId.length; i++) {
+        if (bannedId[i] === '*' || bannedId[i] === userId[i]) continue;
+        return false
     }
+    return true;
+};
 
-    const regex = new RegExp(banned_id[bannedIdx].replace(/\*/g, '.'));
-    const matches = user_id.filter(user => {
-        const result = regex.exec(user);
-        return result && result[0].length === user.length;
-    });
+const createIdInfos = (userIds, bannedIds, isPossible) => {
+    const result = new Array(bannedIds.length).fill(null).map(el => new Set());
 
-    let ret = 0;
-    for (const user of matches) {
-        if (!isUsed[user]) {
-            isUsed[user] = true;
-            current[bannedIdx] = user;
-            ret += solution(user_id, banned_id, bannedIdx + 1);
-            isUsed[user] = false;
+    for (const bIdx in bannedIds) {
+        for (const uIdx in userIds) {
+            if (!isPossible(bannedIds[bIdx], userIds[uIdx])) continue;
+            if (result[bIdx].has(uIdx)) continue;
+            result[bIdx].add(uIdx);
         }
     }
+    return result;
+};
 
-    return ret;
-}
+const getCount = (idInfos, bIdx = 0, idVisited = [], caseVisited = new Set()) => {
+    if (bIdx === idInfos.length) {
+        const visit = idVisited.reduce((acc, visited, i) => {
+            if (!visited) return acc;
+            return acc + i;
+        }, '');
+        if (caseVisited.has(visit)) return 0;
+        caseVisited.add(visit);
+        return 1;//visit.length === idInfos.length ? 1 : 0;
+    }
+
+    let result = 0;
+    for (const uIdx of idInfos[bIdx]) {
+        if (idVisited[uIdx]) continue;
+        idVisited[uIdx] = true;
+        result += getCount(idInfos, bIdx + 1, idVisited, caseVisited);
+        idVisited[uIdx] = false;
+    }
+    return result;
+};
+
+const solution = (userIds, bannedIds) => {
+    const idInfos = createIdInfos(userIds, bannedIds, isPossible);
+    return getCount(idInfos);
+};
