@@ -1,54 +1,34 @@
-const solution = (user_id, banned_id) => {
-  return numberOfCases(
-    getUsedIdObject(user_id),
-    new Set(),
-    0,
-    getBannedList(user_id, banned_id),
-    []
-  );
-};
+function solution(user_id, banned_id) {
+    const candidates = [];
+    const answer = {};
+    banned_id.forEach(ban => {
+        const candidate = [];
+        user_id.forEach((id, i) => {
+            if (comp(ban, id)) candidate.push(i);
+        });
+        candidates.push(candidate);
+    });
 
-const isPossible = (user_id, banned_id) => {
-  if (user_id.length != banned_id.length) return false;
-  for (let i = 0; i < user_id.length; i++) {
-    if (banned_id[i] != "*" && user_id[i] != banned_id[i]) return false;
-  }
-  return true;
-};
-
-const getBannedList = (user_id, banned_id) => {
-  return banned_id.reduce((bannnedList, banned) => {
-    return bannnedList.concat([
-      user_id.reduce((userList, user) => {
-        return isPossible(user, banned) ? [...userList, user] : userList;
-      }, []),
-    ]);
-  }, []);
-};
-
-const getUsedIdObject = (user_id) => {
-  return user_id.reduce((obj, id) => {
-    obj[id] = obj[id] || false;
-    return obj;
-  }, {});
-};
-
-function numberOfCases(isUsed, banneds, index, banned_id, id) {
-  if (id.length == banned_id.length) {
-    banneds.add(id.sort().join(""));
-    return;
-  }
-  for (let i = index; i < banned_id.length; i++) {
-    for (let j = 0; j < banned_id[i].length; j++) {
-      const banned = banned_id[i][j];
-      if (isUsed[banned]) continue;
-      id.push(banned);
-      isUsed[banned] = true;
-      numberOfCases({ ...isUsed }, banneds, i + 1, banned_id, [...id]);
-      isUsed[banned] = false;
-      id.pop();
+    function f(i = 0, selected = []) {
+        if (!candidates[i]) {
+            selected.sort();
+            answer[selected.join('')] = true;
+            return;
+        }
+        candidates[i].filter(e => !selected.includes(e)).forEach(e => {
+            f(i + 1, selected.concat([e]));
+        });
     }
-  }
+    f();
+    return Object.keys(answer).length;
+}
 
-  return [...banneds].length;
+function comp(ban, id) {
+    if (id.length !== ban.length) return false;
+
+    for (let i = 0; i < ban.length; i++) {
+        if (ban[i] === '*') continue;
+        if (ban[i] !== id[i]) return false;
+    }
+    return true;
 }
