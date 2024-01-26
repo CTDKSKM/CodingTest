@@ -3,20 +3,18 @@ function solution(user_id, banned_id) {
     
     banned_id.forEach((target)=>{
         const possibleId = user_id.filter(username=>{
-            if (username.length === target.length) {
-                let cnt = 0;
-                let correct = target.replaceAll('*','').length
-                for(let i=0; i<target.length; i++) {
-                    if (target[i] === '*') continue
-                    if (target[i] === username[i]) cnt++
-                }
-                if (cnt === correct) return true
+            if (username.length !== target.length) return false
+            
+            for(let i=0; i<target.length; i++) {
+                if (target[i] === '*') continue
+                if (target[i] !== username[i]) return false
             }
-            return false
+            
+            return true
         })
+        
         arr.push(possibleId)
     })
-    
     const answer = new Set()
     dfs(0, arr.length, [], arr, answer);
     return answer.size;
