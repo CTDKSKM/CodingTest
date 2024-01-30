@@ -1,17 +1,30 @@
 function solution(stones, k) {
-    stones.push(Infinity);
-    let stack = [{count: Infinity, idx: -1}];
-    let answer = Infinity;
-    for (let i = 0; i < stones.length; i++) {
-        const right = { count: stones[i], idx: i };
-        while (stack[stack.length - 1].count < right.count) {
-            const mid = stack.pop();
-            const left = stack[stack.length - 1];
-            if (right.idx - left.idx > k) {
-                answer = Math.min(answer, mid.count);
+    let left = 1;
+    let right = 200000000;
+
+    while (left < right) {
+        let mid = Math.floor((left + right) / 2);
+        let count = 0;
+        let flag = true;
+
+        for (let i = 0; i < stones.length; i++) {
+            if (stones[i] - mid <= 0) {
+                count++;
+                if (count >= k) {
+                    flag = false;
+                    break;
+                }
+            } else {
+                count = 0;
             }
         }
-        stack.push(right);
+
+        if (flag) {
+            left = mid + 1;
+        } else {
+            right = mid;
+        }
     }
-    return answer;
+
+    return left;
 }
