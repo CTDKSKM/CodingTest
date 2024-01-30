@@ -1,10 +1,6 @@
 function solution(stones, k) {
-    let min = Infinity;
-    let max = -min;
-    for(const num of stones) {
-        min = Math.min(min, num)
-        max = Math.max(max, num)
-    }
+    let min = 1;
+    let max = 200000000;
 
     while (min <= max) {
         let mid = Math.floor((min + max) / 2);
