@@ -1,24 +1,22 @@
 function solution(weights) {
     let answer = 0;
-    const arr = Array.from({length: 1001}, ()=>0)
+    
+    const arr = Array.from({length: 1001}, ()=>0);
+    
     weights.forEach(val=>arr[val]++)
+    
     for(let i=100; i<=1000; i++) {
         const c1 = i
         const c2 = i*2
         const c3 = i*3/2
         const c4 = i*4/3
-        if (arr[c1] >= 2) {
-            let sum = 0;
-            for(let i = arr[c1]-1; i>0; i--) {
-                sum+=i
-            }
-            answer += sum
-        }
-        if (arr[c2] > 0) {answer+=(arr[c1]*arr[c2])}
-        if (arr[c3] > 0) {answer+=(arr[c1]*arr[c3])}
-        if (arr[c4] > 0) {answer+=(arr[c1]*arr[c4])}
+        if (arr[c1] >= 2) answer += arr[c1] * (arr[c1]-1) / 2
+        if (arr[c2] > 0) answer += (arr[c1]*arr[c2])
+        if (arr[c3] > 0) answer += (arr[c1]*arr[c3])
+        if (arr[c4] > 0) answer += (arr[c1]*arr[c4])
         
     }
+    
     return answer
 }
 
