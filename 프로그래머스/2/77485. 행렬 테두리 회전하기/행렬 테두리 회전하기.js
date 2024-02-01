@@ -1,38 +1,31 @@
 function solution(rows, columns, queries) {
-    var answer = [];
-    let count = 1;
-    const arr = Array.from({length:rows}, ()=>Array.from({length:columns},()=>count++));
-    
-    const direction = [[1, 0], [0, 1], [-1, 0], [0, -1]]
-    
-    queries.forEach(val=>{
-        const [r1, c1, r2, c2] = val
-        let cnt = (c2-c1+1)*2 + (r2-r1-1)*2
-        let d_i = 0
-        
-        let x = r1-1
-        let y = c1-1
-        const memo = arr[x][y]
-        let min = memo;
-        
-        let flag = true
-        while(cnt) {
-            cnt--
-            
-            const [dx, dy] = direction[d_i%4]
-            
-            if (x + dx >= r2 || y + dy >= c2 || x + dx < r1-1 || y + dy < c1-1) {d_i++; cnt++; continue}
-            
-            if (cnt) arr[x][y] = arr[x+dx][y+dy]
-            else arr[x][y] = memo
-            
-            x += dx
-            y += dy
-            
-            min = Math.min(min, arr[x][y])
+    const a = [...Array(rows)].map((_, r)=>[...Array(columns)].map((_, c)=>r*columns+c+1));
+    const mins = [];
+
+    queries.map(query => {
+        const [x1, y1, x2, y2] = query.map(_=>_-1);
+        let min = a[x1][y1], tmp = a[x1][y1];
+
+        for(let i=x1;i<x2;i++) {
+            a[i][y1] = a[i+1][y1];
+            min = Math.min(min, a[i][y1]);
         }
-        answer.push(min)
+        for(let i=y1;i<y2;i++) {
+            a[x2][i] = a[x2][i+1];
+            min = Math.min(min, a[x2][i]);
+        }
+        for(let i=x2;i>x1;i--) {
+            a[i][y2] = a[i-1][y2];
+            min = Math.min(min, a[i][y2]);
+        }
+        for(let i=y2;i>y1;i--) {
+            a[x1][i] = a[x1][i-1];
+            min = Math.min(min, a[x1][i]);
+        }
+        a[x1][y1+1] = tmp;
+
+        mins.push(min);
     })
 
-    return answer;
+    return mins;
 }
