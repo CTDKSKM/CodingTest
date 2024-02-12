@@ -4,16 +4,16 @@ function solution(n, k) {
     const len = n
     
     while (answer.length !== len) {
-        const devide = p(n) / n
-        const target = Math.ceil(k/devide)
+        const divide = factorial(n) / n
+        const target = Math.ceil(k/divide)
         answer.push(arr.splice(target-1,1)[0])
-        if (k > devide) k = k % devide
+        if (k > divide) k = k % divide
         n--
     }
 
     return answer;
 }
-function p(n, d = 1) {
-    if (n < 2) return d
-    return p(n-1, d*n)
+function factorial(n, ret = 1) {
+    if (n < 2) return ret
+    return factorial(n-1, ret*n)
 }
