@@ -1,14 +1,4 @@
-function doubleCheck(arr1, arr2) {
-    const checker = new Set(arr1)
-    
-    return arr2.some((num)=>checker.has(num))
-}
-
 function solution(arrayA, arrayB) {
-    const isDouble = doubleCheck(arrayA,arrayB)
-    //중복있을 시,
-    if (isDouble) return 0
-    
     let max = 0;
     
     arrayA.sort((a,b)=>a-b)
