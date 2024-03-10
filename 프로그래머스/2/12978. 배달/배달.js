@@ -1,27 +1,26 @@
 function solution(N, road, K) {
-    const graph = {};
-    road.forEach(([a, b, cost]) => {
-        graph[a] = graph[a] || [];
-        graph[b] = graph[b] || [];
-        graph[a].push({ node: b, cost });
-        graph[b].push({ node: a, cost });
-    });
-    const dp = Array(N + 1).fill(10000*50);
-    const queue = [{ node: 1, distance: 0 }];
-    while (queue.length) {
-        const { node, distance } = queue.shift();
-        if (distance > K) break;
+   const totalDist = new Array(N+1).fill(Infinity)
+   const  adj = Array.from({length: N+1}, () => [])
 
-        if (distance <= dp[node]) {
-            dp[node] = distance;
-            graph[node].forEach(neighbor => {
-                const newDistance = distance + neighbor.cost;
-                if (newDistance <= K) {
-                    queue.push({ node: neighbor.node, distance: newDistance });
-                }
-            });
-        }
+   road.forEach(([a,b,c]) => {
+       adj[a].push({to: b, dist: c})
+       adj[b].push({to: a, dist: c})
+   })
+
+   const queue = [{to: 1, dist: 0}]
+   totalDist[1] = 0
+
+    while(queue.length) {
+        let {to, dist} = queue.pop()
+
+        adj[to].forEach((step) => {
+            if (totalDist[step.to] > totalDist[to] + step.dist) {
+                totalDist[step.to] = totalDist[to] + step.dist
+                queue.push(step)
+            }
+        })
     }
 
-    return dp.filter(dist => dist <= K).length;
+    return totalDist.filter((dist) => dist <= K).length
+
 }
