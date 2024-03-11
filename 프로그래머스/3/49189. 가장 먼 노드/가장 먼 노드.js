@@ -1,10 +1,11 @@
 function solution(n, edge) {
     const graph = {}
     edge.forEach(([a, b]) => {
-        graph[a] = (graph[a] || []).concat({node:b})
-        graph[b] = (graph[b] || []).concat({node:a})
+        graph[a] = graph[a] || []
+        graph[b] = graph[b] || []
+        graph[a].push({node:b})
+        graph[b].push({node:a})
     })
-    
     const dp = Array(n+1).fill(50000)
     const queue = [{node:1, dist:0}]
     let max = 0;
