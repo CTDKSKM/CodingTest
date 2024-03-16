@@ -1,42 +1,30 @@
 function solution(n, s, a, b, fares) {
-    const graph = {};
-    const fromS = Array(n+1).fill(Infinity)
-    fares.forEach(([from, to, fare])=>{
-        graph[from] = graph[from] || [];
-        graph[to] = graph[to] || [];
-        graph[from].push({node:to, fare})
-        graph[to].push({node:from, fare})
-    })
-    const q = [{node:s, fare:0}]
-    fromS[s] = 0
+    // 그래프 생성
+    const graph = Array.from({ length: n + 1 }, () => Array(n + 1).fill(Infinity));
+    for (let i = 1; i <= n; i++) graph[i][i] = 0;
     
-    //S에서 각 지점으로 가는 최소 비용 구하기.
-    calc(q, fromS, graph)
-    
-    //각 지점에서 A, B로 가는 최소비용 구하기
-    let ret = Infinity
-    fromS.map((fare,idx)=>({node:idx, fare})).filter(v=>v.fare !== Infinity).forEach(({node, fare})=>{
-        const toDest = Array(n+1).fill(Infinity)
-        const q = [{node, fare}]
-        toDest[node] = fare
-        
-        calc(q, toDest, graph)
-        
-        ret = Math.min(ret, toDest[a]+toDest[b]-fare)
-    })
-    return ret;
-}
-function calc(q, dp, graph) {
-    while(q.length) {
-        const {node:from, fare:f_fare} = q.shift()
-        graph[from].forEach(({node:to, fare:t_fare})=>{
-            if (dp[to] > t_fare + f_fare) {
-                dp[to] = t_fare+f_fare
-                q.push({node:to, fare:dp[to]})
+    fares.forEach(([from, to, fare]) => {
+        graph[from][to] = fare;
+        graph[to][from] = fare;
+    });
+
+    // 플로이드-와샬 알고리즘으로 모든 노드 사이의 최단 거리 구하기
+    for (let k = 1; k <= n; k++) {
+        for (let i = 1; i <= n; i++) {
+            for (let j = 1; j <= n; j++) {
+                graph[i][j] = Math.min(graph[i][j], graph[i][k] + graph[k][j]);
             }
-        })
+        }
     }
+
+    // S에서 각 노드까지의 최단 거리 계산
+    const fromS = graph[s];
+
+    // 각 노드에서 A와 B로 가는 최단 거리를 합하여 최소 값을 찾기
+    let minTotalFare = Infinity;
+    for (let i = 1; i <= n; i++) {
+        minTotalFare = Math.min(minTotalFare, fromS[i] + graph[i][a] + graph[i][b]);
+    }
+
+    return minTotalFare;
 }
-/*
-S에서 각 지점으로 가는 최소 비용 + 각 지점에서 A, B로 가는 최소 비용
-*/
