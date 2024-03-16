@@ -1,16 +1,11 @@
 function solution(n, s, a, b, fares) {
-    var answer = 0;
-
     const map = Array(n + 1).fill(null).map(() => Array(n + 1).fill(Infinity));
-
     fares.forEach(([start, end, dist]) => {
         map[start][end] = map[end][start] = dist;
     });
-
     const distFromA = findDistToAllNodes(n, map, a);
     const distFromB = findDistToAllNodes(n, map, b);
     const distFromS = findDistToAllNodes(n, map, s);
-
     return Math.min(...distFromS.map((dist, idx) => dist + distFromA[idx] + distFromB[idx]));
 }
 
@@ -26,7 +21,6 @@ function findDistToAllNodes(n, map, node) {
         map[lastVisit].forEach((d, idx) => {
             dist[idx] = Math.min(d + dist[lastVisit], dist[idx]);
         });
-
         let min = Infinity;
 
         for (let j = 1; j <= n; j++) {
