@@ -1,29 +1,37 @@
 function solution(n, s, a, b, fares) {
-    let ret = 20000000;
+    const graph = {};
+    fares.forEach(([from, to, fare])=>{
+        graph[from] = graph[from] || [];
+        graph[to] = graph[to] || [];
+        graph[from].push({node:to, fare})
+        graph[to].push({node:from, fare})
+    })
 
-    let graph = new Array(n+1).fill(0).map(e=>new Array(n+1).fill(1000000));
+    //S에서 각 지점으로 가는 최소 비용 구하기.
+    const fromS = calc(s, 0, graph, n)
 
-    for (let fare of fares) {
-        graph[fare[0]][fare[1]] = fare[2];
-        graph[fare[1]][fare[0]] = fare[2];
-    }
+    //각 지점에서 A, B로 가는 최소비용 구하기
+    let ret = Infinity
+    fromS.map((fare,idx)=>({node:idx, fare})).filter(v=>v.fare !== Infinity).forEach(({node, fare})=>{
+        const toDest = calc(node, fare, graph, n)
 
-    for(let i=1; i<=n; i++) {
-        graph[i][i] = 0;
-    }
-
-    for(let i=1; i<=n; i++) {
-        for(let j=1; j<=n; j++ ) {
-            for(let k=1; k<=n; k++) {
-                graph[j][k] = Math.min(graph[j][k],graph[j][i]+graph[i][k])
-            }
-        }
-    }
-
-    for(let i=1; i<=n; i++) {
-        ret = Math.min(ret,graph[s][i]+graph[i][a]+graph[i][b]);
-    }
-
-    return ret;
+        ret = Math.min(ret, toDest[a]+toDest[b]-fare)
+    })
+    
+    return ret
 }
-
+function calc(node, fare, graph, n) {
+    const dp = Array(n+1).fill(Infinity)
+    dp[node] = fare
+    const q = [{node, fare}]
+    while(q.length) {
+        const {node:from, fare:f_fare} = q.shift()
+        graph[from].forEach(({node:to, fare:t_fare})=>{
+            if (dp[to] > t_fare + f_fare) {
+                dp[to] = t_fare+f_fare
+                q.push({node:to, fare:dp[to]})
+            }
+        })
+    }
+    return dp
+}
