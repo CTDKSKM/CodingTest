@@ -1,37 +1,73 @@
 function solution(board) {    
-    const dp = Array.from({length: board.length}, ()=>Array(board[0].length).fill(Infinity))
+    const [ ROWS, COLS ] = [ board.length, board[0].length ];
 
-    let start_row = board.findIndex(v=>v.indexOf("R") > -1)
-    let start_col = board[start_row].indexOf("R")
-    
-    dp[start_row][start_col] = 0
-        
-    //상하좌우
-    const dr = [-1, 1, 0, 0]
-    const dc = [0, 0, -1, 1]
-    
-    const stack = [[start_row, start_col]]
-    while(stack.length) {
-        const [n_r, n_c] = stack.pop()
-        
-        for(let i=0; i<4; i++) {
-            let nextR = n_r + dr[i]
-            let nextC = n_c + dc[i]
-            if (nextR < 0 || nextR >= board.length || nextC < 0 || nextC >= board[0].length || board[nextR][nextC] === 'D') continue
+    const directions = [ [1,0], [-1,0], [0,1], [0,-1] ];
+    const isValid = (r, c) => {
+        if (r < 0 || r >= ROWS || c < 0 || c >= COLS) return false;
+        if (board[r][c] === "D") return false;
+        return true;
+    }
+    const genKey = (r,c) => `${r}:${c}`
 
-            while(nextR + dr[i] >= 0 && nextR + dr[i] < board.length && nextC + dc[i] >= 0 && nextC + dc[i] < board[0].length && board[nextR+dr[i]][nextC+dc[i]] !== "D") {
-                nextR += dr[i];
-                nextC += dc[i];
+    let res = -1;
+
+    const seen = new Array(ROWS).fill(null)
+                .map((_) => Array(COLS).fill(null).map((_) => Array(4).fill(false)));
+    const UP = 0;
+    const DOWN = 1;
+    const LEFT = 2;
+    const RIGHT = 3;
+
+    const delta2index = (dR, dC) => {
+        if (dR === 0 && dC === 1) return UP;
+        if (dR === 0 && dC === -1) return DOWN;
+        if (dR === 1 && dC === 0) return RIGHT;
+        if (dR === -1 && dC === 0) return LEFT;
+    }
+
+    const bfs = ( initR, initC, seen ) => {
+        const queue = [ [ initR, initC ] ];
+        let steps = 0;
+
+        while (queue.length) {
+            const len = queue.length;
+
+            for (let i = 0; i < len; i += 1) {
+                const [ r, c ] = queue.shift();
+
+                if (board[r][c] === "G") return steps;
+
+                for (const [ dR, dC ] of directions) {
+                    const index = delta2index(dR, dC);
+                    let newR = r + dR;
+                    let newC = c + dC;
+
+                    if (!isValid(newR, newC)) continue;
+                    if (seen[newR][newC][index]) continue;
+
+                    seen[newR][newC][index] = true;
+                    while (isValid(newR, newC)) {
+                        newR += dR;
+                        newC += dC;
+                    }
+                    newR -= dR;
+                    newC -= dC;
+                    queue.push([ newR, newC ]);
+                }
             }
 
-            if (dp[nextR][nextC] > dp[n_r][n_c] + 1) {
-                stack.push([nextR, nextC])
-                dp[nextR][nextC] = dp[n_r][n_c] + 1
-            }
+            steps += 1;
+        }
+        return -1;
+    }
+
+    for (let r = 0; r < ROWS; r += 1) {
+        for (let c = 0; c < COLS; c += 1) {
+            if (board[r][c] !== "R") continue;
+
+            return bfs(r, c, seen);
         }
     }
-    const g_R = board.findIndex(v=>v.indexOf("G") > -1)
-    const g_C = board[g_R].indexOf('G')
-    
-    return dp[g_R][g_C] !== Infinity ? dp[g_R][g_C] : -1;
+
+    return res;
 }
