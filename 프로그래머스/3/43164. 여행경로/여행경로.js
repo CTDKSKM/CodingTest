@@ -13,6 +13,7 @@ function solution(tickets) {
         if (path.length === tickets.length+1) return path;
         if (!graph[node]) return null;
         graph[node].sort(comp);
+        
         for(let i=0; i<graph[node].length; i++) {
             const nextNode = graph[node][i];
             if (!remain[`${node}=>${nextNode}`]) continue;
