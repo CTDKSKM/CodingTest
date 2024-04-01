@@ -1,7 +1,7 @@
 function solution(tickets) {
     const graph = {};
     const remain = {};
-    
+
     tickets.forEach(([from, to])=>{
         if (!graph[from]) graph[from] = [];
         graph[from].push(to);
@@ -21,10 +21,10 @@ function solution(tickets) {
             if (result) return result
             remain[`${node}=>${nextNode}`]++;
         }
-        
+
         return null
     }
-    
+
     return dfs('ICN', ['ICN'])
 }
 
