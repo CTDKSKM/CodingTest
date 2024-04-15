@@ -1,27 +1,37 @@
 function solution(s) {
-    let answer = s.length;
-    let unit = 1;
-    let cnt = 1;
-    while (unit <= s.length / 2) {
-        let str = '';
-        let i = 0;
-        let j = unit;
-        for(i; i<s.length;) {
-            const a = s.slice(i, i+unit);
+    let min = s.length;
+    for (let i = 1; i <= s.length / 2; i++) {
+        let str1 = '';
+        let str2 = '';
+        let ans = '';
+        let count = 1;
+        for (let j = 0; j < s.length; j += i) {
             
-            for(j = i + unit; j<s.length; j+=unit) {
-                const b = s.slice(j, j + unit);
-                if (a == b) cnt++
-                else break
+            if( j === 0 ) {
+                str1 = s.slice(j, j + i);
+            }else{
+                str2 = s.slice(j, j + i)
+                if(str1 === str2){
+                    count++;
+                    if(j+i === s.length) ans += `${count}${str1}`;
+
+                }else{
+                    if( count > 1 ){
+                        ans += `${count}${str1}`
+                    }else{
+                        ans += str1;
+                    }
+                    count = 1;
+                    if(str1.length > str2.length){
+                        ans += str2;
+                    }
+                    str1 = str2;
+                    if(j+i === s.length) ans += str2;
+                }
             }
-            i += unit * cnt
-            if (cnt > 1) str += cnt + a
-            else str += a
-            cnt = 1;
         }
-        answer = Math.min(str.length, answer)
-        unit++
+        min = Math.min(ans.length, min);
     }
-        
-    return answer;
+
+    return min;
 }
