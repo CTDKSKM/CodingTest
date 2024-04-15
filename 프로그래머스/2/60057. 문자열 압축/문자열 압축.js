@@ -1,37 +1,22 @@
 function solution(s) {
-    let min = s.length;
-    for (let i = 1; i <= s.length / 2; i++) {
-        let str1 = '';
-        let str2 = '';
-        let ans = '';
-        let count = 1;
-        for (let j = 0; j < s.length; j += i) {
-            
-            if( j === 0 ) {
-                str1 = s.slice(j, j + i);
-            }else{
-                str2 = s.slice(j, j + i)
-                if(str1 === str2){
-                    count++;
-                    if(j+i === s.length) ans += `${count}${str1}`;
+  let minLen = s.length;
 
-                }else{
-                    if( count > 1 ){
-                        ans += `${count}${str1}`
-                    }else{
-                        ans += str1;
-                    }
-                    count = 1;
-                    if(str1.length > str2.length){
-                        ans += str2;
-                    }
-                    str1 = str2;
-                    if(j+i === s.length) ans += str2;
-                }
-            }
-        }
-        min = Math.min(ans.length, min);
+  top: for (let n = 1; n <= s.length / 2; n++) {
+    let curLen = 0;
+    for (let i = 0; i < s.length; i += n) {
+      let counter = 1;
+      while (s.slice(i, i + n) === s.slice(i + n, i + 2 * n)) {
+        i += n;
+        counter++;
+      }
+      if (counter !== 1) {
+        curLen += n + (counter + "").length;
+      } else {
+        curLen += s.length < i + n ? s.slice(i, i + n).length : n;
+      }
+      if (minLen <= curLen) continue top;
     }
-
-    return min;
+    minLen = curLen;
+  }
+  return minLen;
 }
