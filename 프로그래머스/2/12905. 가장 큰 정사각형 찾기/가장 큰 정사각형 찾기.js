@@ -1,19 +1,18 @@
 function solution(board) {
     const rows = board.length;
     const cols = board[0].length;
+    
+    if (rows == 1 || cols == 1) return 1;
+    
     let maxSize = 0;
-    const dp = Array.from({ length: rows }, () => Array(cols).fill(0));
-
+    
     for (let i = 0; i < rows; i++) {
         for (let j = 0; j < cols; j++) {
-            if (board[i][j] === 1) {
-                if (i === 0 || j === 0) {
-                    dp[i][j] = 1;
-                } else {
-                    dp[i][j] = Math.min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]) + 1;
-                }
-                maxSize = Math.max(maxSize, dp[i][j]);
-            }
+            if (i == 0 || j == 0 || board[i][j] == 0) continue
+            
+            board[i][j] = Math.min(board[i-1][j], board[i][j-1], board[i-1][j-1]) + 1;
+            
+            maxSize = Math.max(maxSize, board[i][j]);
         }
     }
     
