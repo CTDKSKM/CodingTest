@@ -34,15 +34,11 @@ function solution(maps) {
 
     for (let row = 0; row < numRows; row++) {
         for (let col = 0; col < numCols; col++) {
-            if (maps[row][col] === 'S') {
-                const shortestToL = findShortestPath({ row, col, count: 0 }, 'L');
-                if (shortestToL === -1) return -1;
-                answer += shortestToL;
-            }
-            else if (maps[row][col] === 'L') {
-                const shortestToE = findShortestPath({ row, col, count: 0 }, 'E');
-                if (shortestToE === -1) return -1;
-                answer += shortestToE;
+            const current = maps[row][col];
+            if (current === 'S' || current === 'L') {
+                const shortest = findShortestPath({ row, col, count: 0 }, current === 'S' ? 'L' : 'E');
+                if (shortest === -1) return -1;
+                answer += shortest;
             }
         }
     }
