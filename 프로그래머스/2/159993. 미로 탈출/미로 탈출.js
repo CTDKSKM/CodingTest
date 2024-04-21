@@ -8,7 +8,7 @@ function solution(maps) {
         const visited = Array(numRows).fill().map(() => Array(numCols).fill(false));
         const distances = Array(numRows).fill().map(() => Array(numCols).fill(Infinity));
         const queue = [start];
-        // visited[start.row][start.col] = true;
+        visited[start.row][start.col] = true;
         distances[start.row][start.col] = 0;
 
         while (queue.length) {
