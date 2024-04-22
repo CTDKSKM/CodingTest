@@ -28,7 +28,7 @@ while (l <= r) {
   if (cnt) r = mid - 1;
   else {
     l = mid + 1;
-    ans = Math.max(ans, mid);
+    ans = mid;
   }
 }
 
