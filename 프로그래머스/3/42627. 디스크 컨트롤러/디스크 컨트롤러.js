@@ -1,84 +1,59 @@
-class Heap {
-  constructor() {
-    this.heap = [];
-  }
-
-  getSize() {
-    return this.heap.length;
-  }
-  getLeftIdx(node) {
-    return node * 2 + 1;
-  }
-  getRightIdx(node) {
-    return node * 2 + 2;
-  }
-  getParentIdx(node) {
-    return parseInt((node - 1) / 2);
-  }
-  swap(x, y) {
-    [this.heap[x], this.heap[y]] = [this.heap[y], this.heap[x]];
-  }
-  bubbleUp() {
-    let target = this.getSize() - 1;
-    let parentIdx = this.getParentIdx(target);
-    while (this.heap[target][1] < this.heap[parentIdx][1]) {
-      this.swap(target, parentIdx);
-      target = parentIdx;
-      parentIdx = this.getParentIdx(target);
-    }
-  }
-  bubbleDown() {
-    let target = 0;
-    let leftIdx = this.getLeftIdx(target);
-    let rightIdx = this.getRightIdx(target);
-    while (
-      (this.heap[leftIdx] && this.heap[target][1] > this.heap[leftIdx][1]) ||
-      (this.heap[rightIdx] && this.heap[target][1] > this.heap[rightIdx][1])
-    ) {
-      let small = leftIdx;
-      if (this.heap[rightIdx] && this.heap[small][1] > this.heap[rightIdx][1]) {
-        small = rightIdx;
-      }
-      this.swap(target, small);
-      target = small;
-      leftIdx = this.getLeftIdx(target);
-      rightIdx = this.getRightIdx(target);
-    }
-  }
-
-  pushItem(node) {
-    this.heap.push(node);
-    this.bubbleUp();
-  }
-
-  shiftItem() {
-    if (this.getSize() === 0) return null;
-    if (this.getSize() === 1) return this.heap.pop();
-    let temp = this.heap[0];
-    this.heap[0] = this.heap.pop();
-    this.bubbleDown();
-    return temp;
-  }
-}
 function solution(jobs) {
-  const heap = new Heap();
-  jobs = jobs.sort((a, b) => (a[0] - b[0] === 0 ? a[1] - b[1] : a[0] - b[0]));
-  let totalJobs = jobs.length;
-  let done = 0;
-  let temp = [];
-  let current = 0;
-  while (done < totalJobs) {
-    while (jobs[0] && current >= jobs[0][0]) {
-      heap.pushItem(jobs.shift());
+    let sum = 0;
+    let currentTime = 0;
+    let completedJobs = 0;
+
+    // 시작 시간 기준으로 정렬
+    jobs.sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+
+    // 작업 완료 여부 배열
+    const isJobCompleted = Array(jobs.length).fill(false);
+
+    // 대기열 초기화
+    const queue = [jobs[0]];
+    isJobCompleted[0] = true;
+
+    // 작업 수행
+    while (queue.length) {
+        const [start, duration] = queue.shift();
+
+        // 현재 시간이 시작 시간보다 작으면 현재 시간을 시작 시간으로 설정
+        if (currentTime < start) currentTime = start;
+
+        // 대기 시간 계산
+        if (currentTime > start) sum += (currentTime - start);
+
+        // 작업 수행 시간만큼 시간 경과
+        currentTime += duration;
+        sum += duration;
+
+        // 모든 작업이 완료되면 종료
+        if (++completedJobs === jobs.length) break;
+
+        // 다음 작업 선택
+        let nextIndex = findNextJobIndex(jobs, isJobCompleted, currentTime);
+        queue.push(jobs[nextIndex]);
+        isJobCompleted[nextIndex] = true;
     }
-    if (heap.getSize()) {
-      let [startTime, cost] = heap.shiftItem();
-      temp.push(current + cost - startTime);
-      current += cost;
-      done++;
-    } else {
-      current++;
-    }
-  }
-  return parseInt(temp.reduce((a, b) => a + b) / temp.length);
+
+    // 평균 대기 시간 반환
+    return Math.floor(sum / jobs.length);
+}
+
+// 다음 작업 인덱스 찾기
+function findNextJobIndex(jobs, isJobCompleted, currentTime) {
+    let minDuration = Infinity;
+    let nextIndex;
+
+    jobs.forEach((job, idx) => {
+        const [start, duration] = job;
+        if (!isJobCompleted[idx] && currentTime > start && duration < minDuration) {
+            minDuration = duration;
+            nextIndex = idx;
+        }
+    });
+
+    // 모든 작업이 완료되었을 때 다음 작업 인덱스 반환
+    if (minDuration === Infinity) nextIndex = isJobCompleted.indexOf(false);
+    return nextIndex;
 }
