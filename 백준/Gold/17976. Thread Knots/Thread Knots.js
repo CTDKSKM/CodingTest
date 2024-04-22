@@ -13,8 +13,8 @@ let l = 0;
 let r = stack[n - 1].reduce((a, b) => a + b);
 
 let ans = 0;
-while (l <= r) {
-  let mid = Math.floor((l + r) / 2);
+while (l < r) {
+  let mid = Math.floor((l + r + 1) / 2);
   let cur = stack[0][0];
   let cnt = n - 1;
   for (let i = 1; i < n; i++) {
@@ -27,7 +27,7 @@ while (l <= r) {
 
   if (cnt) r = mid - 1;
   else {
-    l = mid + 1;
+    l = mid;
     ans = mid;
   }
 }
