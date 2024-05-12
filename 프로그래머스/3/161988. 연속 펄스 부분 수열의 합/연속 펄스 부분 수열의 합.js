@@ -1,19 +1,12 @@
 function solution(sequence) {
-    const p = [1, -1];
-    
-    const s1 = sequence.map((v,i)=>v*p[i%2]);
-    const s2 = sequence.map((v,i)=>v*p[(i+1)%2]);
-    
-    return Math.max(findMax(s1), findMax(s2));
-}
-function findMax(arr) {
-    let maxEndingHere = arr[0];
-    let maxSoFar = arr[0];
+    let m = 0, M = 0;
+    let acc = m;
 
-    for (let i = 1; i < arr.length; i++) {
-        maxEndingHere = Math.max(arr[i], maxEndingHere + arr[i]);
-        maxSoFar = Math.max(maxSoFar, maxEndingHere);
+    for (let i = 0; i < sequence.length; i++) {
+        acc = i % 2 == 1 ? acc - sequence[i] : acc + sequence[i];
+        M = Math.max(M, acc);
+        m = Math.min(m, acc);
     }
 
-    return maxSoFar;
+    return M == m ? M : M - m;
 }
