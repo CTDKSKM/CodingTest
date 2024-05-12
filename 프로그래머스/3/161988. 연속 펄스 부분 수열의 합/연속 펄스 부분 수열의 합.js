@@ -7,6 +7,6 @@ function solution(sequence) {
         M = Math.max(M, acc);
         m = Math.min(m, acc);
     }
-
-    return M == m ? M : M - m;
+    
+    return M == m ? 0 : M - m;
 }
