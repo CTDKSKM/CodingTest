@@ -2,7 +2,7 @@ function solution(k, ranges) {
     const answer = [];
     let n = 0;
     const y = [];
-    while ( k > 1 ) {
+    while ( k !== 1 ) {
         y.push(k);
         k % 2 == 0 ? k = k/2 : k = (k*3) + 1;
         n++;
