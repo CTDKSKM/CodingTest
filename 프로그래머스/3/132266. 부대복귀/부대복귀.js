@@ -1,40 +1,27 @@
 function solution(n, roads, sources, destination) {
-    const graph = createGraph(n, roads);
-    const costs = bfs(graph, destination, n);
-    
-    return sources.map(start => costs[start] === Infinity ? -1 : costs[start]);
-}
-
-function createGraph(n, roads) {
-    const graph = {};
-    
-    roads.forEach(([from, to]) => {
-        graph[from] = [...(graph[from] || []), to];
-        graph[to] = [...(graph[to] || []), from];
-    });
-    
-    return graph;
-}
-
-function bfs(graph, start, n) {
-    const distances = new Array(n + 1).fill(Infinity);
-    const visited = new Array(n + 1).fill(false);
-    visited[start] = true;
-    distances[start] = 0;
-    
-    const queue = [start];
-    
-    while (queue.length) {
-        const node = queue.shift();
-        
-        for (const next of graph[node] || []) {
-            if (!visited[next]) {
-                visited[next] = true;
-                queue.push(next);
-                distances[next] = distances[node] + 1;
+    const graph = new Array(n+1).fill(null).map(_=>[]);
+    for(let [a,b] of roads){
+        graph[a].push(b);
+        graph[b].push(a);
+    }
+    const visited = new Array(n+1).fill(Infinity);
+    const bfs = (destination) =>{
+        const q = [destination];
+        visited[destination] = 0;
+        while(q.length > 0){
+            const idx = q.shift();
+            for(let newIdx of graph[idx]){
+                if(visited[idx]+1 < visited[newIdx]){
+                    visited[newIdx] = visited[idx]+1;
+                    q.push(newIdx);
+                }
             }
         }
     }
-    
-    return distances;
+    bfs(destination);
+
+    return sources.map(v=>{
+        if(visited[v] === Infinity) return -1;
+        else return visited[v];
+    });
 }
