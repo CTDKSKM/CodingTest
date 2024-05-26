@@ -1,42 +1,34 @@
 function solution(relation) {
-    const all = [];
-    const col = relation[0].length;
-    const row = relation.length;
-    const allCombinations = [];
-    
-    const getCombinations = (prefix, length, start) => {
-        if (prefix.length === length) {
-            allCombinations.push(prefix);
-            return;
+  const tuples = relation[0].length,
+    rows = relation.length;
+  const cKey = [];
+
+  for (let i = 1; i <= 1 << tuples; i++) {
+    const set = new Set();
+
+    for (let j = 0; j < rows; j++) {
+      let key = "";
+
+      for (let k = 0; k < tuples; k++) {
+        if (i & (1 << k)) {
+          key += relation[j][k];
         }
-        
-        for (let i = start; i < col; i++) {
-            getCombinations(prefix + i, length, i + 1);
-        }
+      }
+      set.add(key);
     }
 
-    for (let i = 1; i <= col; i++) {
-        getCombinations('', i, 0);
+    // 유일성 및 최소성 체크
+    if (rows === set.size && isMinimal(cKey, i)) {
+      cKey.push(i);
     }
-    
-    const uniqueCombinations = [];
-    allCombinations.forEach((comb) => {
-        const sets = new Set();
-        relation.forEach((tuple) => {
-            const key = comb.split('').map(c => tuple[parseInt(c)]).join('|');
-            sets.add(key);
-        });
-        if (sets.size === row) uniqueCombinations.push(comb);
-    });
-    
-    uniqueCombinations.sort((a, b) => a.length - b.length);
-    
-    const candidateKeys = [];
-    uniqueCombinations.forEach((comb) => {
-        if (candidateKeys.every(key => !key.split('').every(char => comb.includes(char)))) {
-            candidateKeys.push(comb);
-        }
-    });
-    
-    return candidateKeys.length;
+  }
+  return cKey.length;
+}
+
+// 최소성 체크
+function isMinimal(cKey, index) {
+  for (let i = 0; i < cKey.length; i++) {
+    if ((cKey[i] & index) == cKey[i]) return false;
+  }
+  return true;
 }
