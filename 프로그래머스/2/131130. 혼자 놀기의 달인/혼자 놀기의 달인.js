@@ -1,27 +1,24 @@
 function solution(cards) {
-    const cardsCopy = cards.slice();
-    const groupSizes = [];
+    var answer = 0;
+    var d = Array.from({length: cards.length}, () => 0);
+    var arr = [];
 
-    for (let i = 0; i < cards.length; i++) {
-        if (cardsCopy[i] == 0) continue;
-        let size = 0, j = i + 1;
+    for(var i=0;i<cards.length;i++){
+        if(d[i] == 1) continue;
 
-        while(cardsCopy[j - 1] != 0) {
-            size += 1;
-            let nextJ = cardsCopy[j - 1];
-            cardsCopy[j - 1] = 0;
-            j = nextJ;
-
+        var queue = [cards[i]]; d[i] = 1;
+        var cnt = 1;
+        while(queue.length>0){
+            var num = queue.shift();
+            if (d[num-1] == 0) {
+                queue.push(cards[num-1]);
+                d[num-1] = 1;
+                cnt++;
+            }
         }
-        groupSizes.push(size);
+        arr.push(cnt);
     }
-    let max = 0, second = 0;
-    groupSizes.forEach(s => {
-        if (s > max) {
-            second = max;
-            max = s;
-        } else if (s > second) second = s;
-    });
+    arr.sort((a,b) => b-a);
 
-    return max * second;
+    return arr.length == 1 ? 0 : arr[0] * arr[1];
 }
