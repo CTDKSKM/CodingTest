@@ -1,39 +1,27 @@
 function solution(cards) {
-  const SIZE = cards.length
-  const ONLY_ONE_GROUP_SCORE = 0
-  const groups = []
-  const visited = new Array(SIZE).fill(false)
+    const cardsCopy = cards.slice();
+    const groupSizes = [];
 
-  const dfs = (current, group) => {
-    visited[current] = true
-    group.push(current)
+    for (let i = 0; i < cards.length; i++) {
+        if (cardsCopy[i] == 0) continue;
+        let size = 0, j = i + 1;
 
-    const next = cards[current - 1]
+        while(cardsCopy[j - 1] != 0) {
+            size += 1;
+            let nextJ = cardsCopy[j - 1];
+            cardsCopy[j - 1] = 0;
+            j = nextJ;
 
-    if (visited[next]) {
-      groups.push(group)
-
-      return
+        }
+        groupSizes.push(size);
     }
+    let max = 0, second = 0;
+    groupSizes.forEach(s => {
+        if (s > max) {
+            second = max;
+            max = s;
+        } else if (s > second) second = s;
+    });
 
-    dfs(next, group)
-  }
-
-  cards.forEach((current) => {
-    if (visited[current]) {
-      return
-    }
-
-    dfs(current, [])
-  })
-
-  if (groups.length === 1) {
-    return ONLY_ONE_GROUP_SCORE
-  }
-
-  const [first, second] = groups
-    .map((group) => group.length)
-    .sort((a, b) => b - a)
-
-  return first * second
+    return max * second;
 }
