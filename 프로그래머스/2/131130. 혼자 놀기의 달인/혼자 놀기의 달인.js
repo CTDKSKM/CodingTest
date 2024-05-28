@@ -1,26 +1,39 @@
-const record = [0, 0];
-const visited = new Set([]);
+function solution(cards) {
+  const SIZE = cards.length
+  const ONLY_ONE_GROUP_SCORE = 0
+  const groups = []
+  const visited = new Array(SIZE).fill(false)
 
-const recordScore = (score) => {
-  if (score > record[0] || score > record[1]) {
-    const idx = record.indexOf(Math.min(...record));
-    record[idx] = score;
-  }
-};
+  const dfs = (current, group) => {
+    visited[current] = true
+    group.push(current)
 
-const dfs = (cards, start, depth = 0) => {
-  if (visited.has(start)) {
-    if (depth) recordScore(depth);
-    return;
-  }
-  visited.add(start);
-  dfs(cards, cards[start - 1], depth + 1);
-};
+    const next = cards[current - 1]
 
-const solution = (cards) => {
-  for (let i = 1; i <= cards.length; i++) {
-    dfs(cards, i);
+    if (visited[next]) {
+      groups.push(group)
+
+      return
+    }
+
+    dfs(next, group)
   }
 
-  return record[0] * record[1];
-};
+  cards.forEach((current) => {
+    if (visited[current]) {
+      return
+    }
+
+    dfs(current, [])
+  })
+
+  if (groups.length === 1) {
+    return ONLY_ONE_GROUP_SCORE
+  }
+
+  const [first, second] = groups
+    .map((group) => group.length)
+    .sort((a, b) => b - a)
+
+  return first * second
+}
