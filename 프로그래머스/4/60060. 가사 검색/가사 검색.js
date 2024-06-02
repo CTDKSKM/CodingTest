@@ -1,74 +1,62 @@
-function createNode() {
-    return {
-        children: {},
-        isEndOfWord: false,
-        lengthCount: {}
-    };
-}
-
-function insert(root, word) {
-    let node = root;
-    const length = word.length;
-    for (let char of word) {
-        if (!node.children[char]) {
-            node.children[char] = createNode();
-        }
-        node = node.children[char];
-        if (!node.lengthCount[length]) {
-            node.lengthCount[length] = 0;
-        }
-        node.lengthCount[length]++;
+class Trie {
+    constructor() {
+        this.children = {};
+        this.sum = 0;
     }
-    node.isEndOfWord = true;
-}
 
-function countWordsStartingWith(root, prefix) {
-    let node = root;
-    for (let char of prefix) {
-        if (!node.children[char]) {
-            return {};
+    insert(word) {
+        let trie = this;
+        ++this.sum;
+
+        for (const letter of word) {
+            if (typeof trie.children[letter] === 'undefined') {
+                trie.children[letter] = new Trie();
+            }
+
+            trie = trie.children[letter];
+            ++trie.sum;
         }
-        node = node.children[char];
     }
-    return node.lengthCount;
+
+    getSum(query) {
+        let trie = this;
+        for (const letter of query) {
+            if (letter === '?') {
+                return trie.sum;
+            } else if (typeof trie.children[letter] === 'undefined') {
+                return 0;
+            }
+
+            trie = trie.children[letter];
+        }
+    }
 }
 
 function solution(words, queries) {
-    const trie = createNode();
-    const reverseTrie = createNode();
-    const qMap = new Map();
-    const answer = [];
+    const tries = {};
+    const reverseds = {};
 
-    // 단어 삽입
-    words.forEach(w => {
-        const rw = [...w].reverse().join('');
-        insert(trie, w);
-        insert(reverseTrie, rw);
-    });
-
-    // 쿼리 처리
-    queries.forEach(q => {
-        if (qMap.has(q)) {
-            answer.push(qMap.get(q));
-            return;
-        }
-        
-        const len = q.length;
-        let cnt;
-
-        if (q[0] === '?' && q[q.length - 1] === '?') {
-            // 모두 와일드카드일 경우
-            cnt = words.filter(v => v.length === len).length;
-        } else if (q[0] === '?') {
-            const rq = [...q].reverse().join('');
-            cnt = countWordsStartingWith(reverseTrie, rq.slice(0, rq.indexOf('?')))[len] || 0;
-        } else {
-            cnt = countWordsStartingWith(trie, q.slice(0, q.indexOf('?')))[len] || 0;
+    for (const word of words) {
+        const length = word.length;
+        if (typeof tries[length] === 'undefined') {
+            tries[length] = new Trie();
+            reverseds[length] = new Trie();
         }
 
-        qMap.set(q, cnt);
-        answer.push(cnt);
-    });
+        tries[length].insert(word);
+        reverseds[length].insert([...word].reverse().join(''));
+    }
 
-    return answer;
+    return queries.map((query) => {
+        const length = query.length;
+        if (typeof tries[length] === 'undefined') {
+            return 0;
+        }
+
+        if (query[0] === '?') {
+            return reverseds[length].getSum([...query].reverse().join(''));
+        }
+
+        return tries[length].getSum(query);
+    });
 }
