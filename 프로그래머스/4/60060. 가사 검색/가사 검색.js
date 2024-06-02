@@ -1,62 +1,30 @@
-class Trie {
-    constructor() {
-        this.children = {};
-        this.sum = 0;
-    }
-
-    insert(word) {
-        let trie = this;
-        ++this.sum;
-
-        for (const letter of word) {
-            if (typeof trie.children[letter] === 'undefined') {
-                trie.children[letter] = new Trie();
-            }
-
-            trie = trie.children[letter];
-            ++trie.sum;
-        }
-    }
-
-    getSum(query) {
-        let trie = this;
-        for (const letter of query) {
-            if (letter === '?') {
-                return trie.sum;
-            } else if (typeof trie.children[letter] === 'undefined') {
-                return 0;
-            }
-
-            trie = trie.children[letter];
-        }
-    }
-}
-
-function solution(words, queries) {
-    const tries = {};
-    const reverseds = {};
-
-    for (const word of words) {
-        const length = word.length;
-        if (typeof tries[length] === 'undefined') {
-            tries[length] = new Trie();
-            reverseds[length] = new Trie();
-        }
-
-        tries[length].insert(word);
-        reverseds[length].insert([...word].reverse().join(''));
-    }
-
-    return queries.map((query) => {
-        const length = query.length;
-        if (typeof tries[length] === 'undefined') {
-            return 0;
-        }
-
-        if (query[0] === '?') {
-            return reverseds[length].getSum([...query].reverse().join(''));
-        }
-
-        return tries[length].getSum(query);
-    });
+const reverseStr = str => str.split('').reverse().join('')
+function solution (words, queries) {
+    const lens = {}
+    const [pre, suf] = [words, words.map(reverseStr)].map((words, i) => {
+        const root = {}
+        words.forEach(w => {
+            let [o, len] = [root, w.length]
+            if (i === 0) lens[len] = (lens[len] || 0) + 1
+            do {
+                const node = o[w[0] + len] || (o[w[0] + len] = { cnt: 0, next: {} })
+                node.cnt++
+                o = node.next
+                w = w.slice(1)
+            } while (w)
+        })
+        return root
+    })
+    return queries.map(q => q[0] === '?' ? [suf, reverseStr(q)] : [pre, q]).map(([o, q]) => {
+        let len = q.length
+        if (q[0] === '?') return lens[len] || 0
+        let cnt = 0
+        do {
+            const node = o[q[0] + len]
+            if (!node) return 0
+            cnt = node.cnt
+            o = node.next
+        } while ((q = q.slice(1))[0] !== '?')
+        return cnt
+    })
 }
