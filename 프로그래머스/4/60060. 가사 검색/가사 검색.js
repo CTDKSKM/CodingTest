@@ -1,49 +1,74 @@
-function counts(arr, t) {
-    const replace = (str, char) => str.replace(/\?/g, char);
-    const a = bisectLeft(arr, replace(t, 'a'));
-    const z = bisectRight(arr, replace(t, 'z'));
-    return z - a;
+function createNode() {
+    return {
+        children: {},
+        isEndOfWord: false,
+        lengthCount: {}
+    };
 }
 
-function bisectLeft(arr, x) {
-    let lo = 0, hi = arr.length;
-    while (lo < hi) {
-        const mid = Math.floor((lo + hi) / 2);
-        if (arr[mid] < x) lo = mid + 1;
-        else hi = mid;
+function insert(root, word) {
+    let node = root;
+    const length = word.length;
+    for (let char of word) {
+        if (!node.children[char]) {
+            node.children[char] = createNode();
+        }
+        node = node.children[char];
+        if (!node.lengthCount[length]) {
+            node.lengthCount[length] = 0;
+        }
+        node.lengthCount[length]++;
     }
-    return lo;
+    node.isEndOfWord = true;
 }
 
-function bisectRight(arr, x) {
-    let lo = 0, hi = arr.length;
-    while (lo < hi) {
-        const mid = Math.floor((lo + hi) / 2);
-        if (arr[mid] <= x) lo = mid + 1;
-        else hi = mid;
+function countWordsStartingWith(root, prefix) {
+    let node = root;
+    for (let char of prefix) {
+        if (!node.children[char]) {
+            return {};
+        }
+        node = node.children[char];
     }
-    return lo;
+    return node.lengthCount;
 }
 
 function solution(words, queries) {
-    const result = [];
-    words.sort();
-    const wordsReverse = [...words].map(word => word.split('').reverse().join('')).sort();
-    const newWordsReverses = {};
-    const newWordss = {};
+    const trie = createNode();
+    const reverseTrie = createNode();
+    const qMap = new Map();
+    const answer = [];
 
-    for (const q of queries) {
-        if (q[0] === '?') {
-            if (!newWordsReverses.hasOwnProperty(q.length)) {
-                newWordsReverses[q.length] = wordsReverse.filter(word => word.length === q.length);
-            }
-            result.push(counts(newWordsReverses[q.length], q.split('').reverse().join('')));
-        } else {
-            if (!newWordss.hasOwnProperty(q.length)) {
-                newWordss[q.length] = words.filter(word => word.length === q.length);
-            }
-            result.push(counts(newWordss[q.length], q));
+    // 단어 삽입
+    words.forEach(w => {
+        const rw = [...w].reverse().join('');
+        insert(trie, w);
+        insert(reverseTrie, rw);
+    });
+
+    // 쿼리 처리
+    queries.forEach(q => {
+        if (qMap.has(q)) {
+            answer.push(qMap.get(q));
+            return;
         }
-    }
-    return result;
+        
+        const len = q.length;
+        let cnt;
+
+        if (q[0] === '?' && q[q.length - 1] === '?') {
+            // 모두 와일드카드일 경우
+            cnt = words.filter(v => v.length === len).length;
+        } else if (q[0] === '?') {
+            const rq = [...q].reverse().join('');
+            cnt = countWordsStartingWith(reverseTrie, rq.slice(0, rq.indexOf('?')))[len] || 0;
+        } else {
+            cnt = countWordsStartingWith(trie, q.slice(0, q.indexOf('?')))[len] || 0;
+        }
+
+        qMap.set(q, cnt);
+        answer.push(cnt);
+    });
+
+    return answer;
 }
