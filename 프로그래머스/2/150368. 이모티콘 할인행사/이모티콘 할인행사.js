@@ -1,41 +1,53 @@
 function solution(users, emoticons) {
-    let bestResult = [0, 0];
-    const discountRates = [10, 20, 30, 40];
-    const numOfEmoticons = emoticons.length;
+    let discount = [10, 20, 30, 40];
+    let len = emoticons.length;
+    let res = [];
+    let arr = Array(len).fill(0);
 
-    // 4의 거듭제곱만큼 반복 (할인율 경우의 수)
-    for (let i = 0; i < Math.pow(4, numOfEmoticons); i++) {
-        let currentResult = [0, 0];
-        const discountPattern = i.toString(4).padStart(numOfEmoticons, '0');
-        const discountPrices = Array(numOfEmoticons).fill(0);
-
-        // 각 이모티콘에 대한 할인 가격 계산
-        for (let j = 0; j < numOfEmoticons; j++) {
-            const discountRate = discountRates[discountPattern[j]];
-            discountPrices[j] = emoticons[j] * (100 - discountRate) / 100;
+    const dfs = (depth) => {
+        if (depth === len) {
+            res.push(arr.slice());
+            return;
         }
 
-        // 유저별로 구매 여부 및 구매 금액 계산
-        users.forEach(([minDiscount, maxPrice]) => {
-            let totalSpent = 0;
-            discountPrices.forEach((price, index) => {
-                if (discountRates[discountPattern[index]] >= minDiscount) {
-                    totalSpent += price;
+        for (let i = 0; i < 4; i++) {
+            arr[depth] = discount[i];
+            dfs(depth + 1);
+            arr[depth] = 0;
+        }
+    };
+
+    dfs(0);
+
+    let pp = 0, c = 0;
+
+    for (let i = 0; i < res.length; i++) {
+        let sales = res[i];
+        let counter = 0, money = 0;
+
+        for (let j = 0; j < users.length; j++) {
+            let [a, b] = users[j];
+            let sum = 0;
+            let flag = false;
+
+            for (let k = 0; k < len; k++) {
+                if (sales[k] >= a) {
+                    sum += emoticons[k] * (100 - sales[k]) / 100;
                 }
-            });
-            if (totalSpent >= maxPrice) {
-                currentResult[0]++;
-            } else {
-                currentResult[1] += totalSpent;
+                if (sum >= b) {
+                    flag = true;
+                    break;
+                } 
             }
-        });
 
-        // 최적 결과 갱신
-        if (currentResult[0] > bestResult[0] || 
-            (currentResult[0] === bestResult[0] && currentResult[1] > bestResult[1])) {
-            bestResult = currentResult;
+            if (flag) counter++;
+            else money += sum;
         }
+
+        if (counter > pp) {
+            pp = counter, c = money;
+        } else if (counter === pp && money > c) c = money
     }
 
-    return bestResult;
+    return [pp, c];
 }
