@@ -1,37 +1,48 @@
 function solution(plans) {
+    plans = plans.map(([i, t, n]) => ([i, transTimeStrToNum(t), Number(n)]));
+    
+    plans.sort((a, b) => a[1] - b[1]);
+    
     const answer = [];
-    const stop = [];
+    const keep = [];
+    let nowIdx = 0;
+    let nowtime = plans[0][1];
+    
+    while (nowIdx < plans.length) {
+        const [name, start, playtime] = plans[nowIdx];
+        const nextPlan = plans[nowIdx + 1];
+        const nextStart = nextPlan ? nextPlan[1] : Infinity;
 
-    plans = plans.map(v => { v[1] = v[1].split(":").reduce((acc, cur) => 60*Number(acc) + Number(cur)); v[2] = Number(v[2]); return v; }).sort((a, b) => a[1] - b[1]);
+        if (nextStart < start + playtime) {
+            keep.push([name, playtime - (nextStart - start)]);
+        } else {
+            answer.push(name);
+            nowtime += playtime;
 
-    let [curr, time, last] = plans[0];
-    let i = 1;
-    while(i < plans.length)
-    {
-        let next = plans[i];
-        if(last > next[1] - time)
-        {
-            last -= next[1] - time;
-            stop.push([curr, last]);
-        }
-        else
-        {
-            answer.push(curr);
-            if(stop.length > 0)
-            {
-                const tmp = stop.pop();
-                [curr, time, last] = [tmp[0], time+last, tmp[1]];
-                continue;
+            while (keep.length && nowtime < nextStart) {
+                const [keptName, keptPlaytime] = keep.pop();
+                if (nextStart < nowtime + keptPlaytime) {
+                    keep.push([keptName, keptPlaytime - (nextStart - nowtime)]);
+                    break;
+                } else {
+                    answer.push(keptName);
+                    nowtime += keptPlaytime;
+                }
             }
         }
-
-        [curr, time, last] = next;
-        i++;
+        
+        nowtime = nextStart;
+        nowIdx++;
+    }
+    
+    while (keep.length) {
+        answer.push(keep.pop()[0]);
     }
 
-    answer.push(plans.pop()[0]);
-    while(stop.length > 0)
-        answer.push(stop.pop()[0]);
-
     return answer;
+}
+
+function transTimeStrToNum(str) {
+    const [h, m] = str.split(':').map(Number);
+    return h * 60 + m;
 }
