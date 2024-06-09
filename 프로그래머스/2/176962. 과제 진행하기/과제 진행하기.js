@@ -1,48 +1,24 @@
 function solution(plans) {
-    plans = plans.map(([i, t, n]) => ([i, transTimeStrToNum(t), Number(n)]));
-    
-    plans.sort((a, b) => a[1] - b[1]);
-    
-    const answer = [];
-    const keep = [];
-    let nowIdx = 0;
-    let nowtime = plans[0][1];
-    
-    while (nowIdx < plans.length) {
-        const [name, start, playtime] = plans[nowIdx];
-        const nextPlan = plans[nowIdx + 1];
-        const nextStart = nextPlan ? nextPlan[1] : Infinity;
+    let sortList = [];
+    for (let item of plans) {
+        let temp = item[1].split(":");
+        let times = parseInt(temp[0]) * 60 + parseInt(temp[1]);
+        item[1] = times;
+        sortList.push(item);
+    }
+    sortList.sort((a, b) => b[1] - a[1]);
 
-        if (nextStart < start + playtime) {
-            keep.push([name, playtime - (nextStart - start)]);
-        } else {
-            answer.push(name);
-            nowtime += playtime;
-
-            while (keep.length && nowtime < nextStart) {
-                const [keptName, keptPlaytime] = keep.pop();
-                if (nextStart < nowtime + keptPlaytime) {
-                    keep.push([keptName, keptPlaytime - (nextStart - nowtime)]);
-                    break;
-                } else {
-                    answer.push(keptName);
-                    nowtime += keptPlaytime;
-                }
+    let answer = [];
+    while (sortList.length) {
+        let temp = sortList.pop();
+        for (let index = 0; index < answer.length; index++) {
+            if (answer[index][0] > temp[1]) {
+                answer[index][0] += parseInt(temp[2]);
             }
         }
-        
-        nowtime = nextStart;
-        nowIdx++;
+        answer.push([temp[1] + parseInt(temp[2]), temp[0]]);
     }
+    answer.sort((a, b) => a[0] - b[0]);
     
-    while (keep.length) {
-        answer.push(keep.pop()[0]);
-    }
-
-    return answer;
-}
-
-function transTimeStrToNum(str) {
-    const [h, m] = str.split(':').map(Number);
-    return h * 60 + m;
+    return answer.flatMap(item => item.filter(i => typeof i === 'string'));
 }
