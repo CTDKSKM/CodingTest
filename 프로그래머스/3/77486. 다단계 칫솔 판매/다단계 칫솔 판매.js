@@ -1,22 +1,27 @@
 function solution(enroll, referral, seller, amount) {
-    const parents = new Map();
-    const revenue = new Map();
-    
-    enroll.forEach((name, i) => {
-        parents.set(name, referral[i]);
-        revenue.set(name, 0);
-    });
+    const sells = seller.reduce((sells, sell, i) => ((sells[sell] = sells[sell] || []).push(amount[i] * 100), sells), {})
+    const members = enroll.reduce((members, member, i) => (members[member] = {
+        parent: members[referral[i]] || null,
+        sells: sells[member] || [],
+        profit: 0,
+    }, members), {})
 
-    seller.forEach((name, i) => {
-        let profit = amount[i] * 100;
-        while (name !== "-" && profit > 0) {
-            let commission = Math.floor(profit * 0.1);
-            let actualProfit = profit - commission;
-            revenue.set(name, revenue.get(name) + actualProfit);
-            name = parents.get(name);
-            profit = commission;
+    for (let member of Object.values(members)) {
+        for (let sell of member.sells) {
+            let profit = sell
+            let currentMember = member
+
+            while (currentMember && profit) {
+                let parentProfit = Math.floor(profit / 10)
+                let myProfit = profit - parentProfit
+
+                currentMember.profit += myProfit
+
+                currentMember = currentMember.parent
+                profit = parentProfit
+            }
         }
-    });
+    }
 
-    return enroll.map(name => revenue.get(name));
+    return enroll.map(member => members[member].profit)
 }
