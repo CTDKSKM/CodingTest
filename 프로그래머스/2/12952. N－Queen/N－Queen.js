@@ -1,26 +1,46 @@
 function solution(n) {
-    let answer = 0;
-    const cols = new Array(n).fill(false);
-    const diag1 = new Array(2 * n - 1).fill(false);
-    const diag2 = new Array(2 * n - 1).fill(false);
+  let count = 0;
 
-    const backtrack = (row) => {
-        if (row === n) {
-            answer++;
-            return;
-        }
+  function isSafe(board, row, col) {
+    for (let i = 0; i < row; i++) {
+      if (board[i][col] === 1) {
+        return false;
+      }
+    }
 
-        for (let col = 0; col < n; col++) {
-            if (cols[col] || diag1[row - col + n - 1] || diag2[row + col]) {
-                continue;
-            }
+    for (let i = row, j = col; i >= 0 && j >= 0; i--, j--) {
+      if (board[i][j] === 1) {
+        return false;
+      }
+    }
 
-            cols[col] = diag1[row - col + n - 1] = diag2[row + col] = true;
-            backtrack(row + 1);
-            cols[col] = diag1[row - col + n - 1] = diag2[row + col] = false;
-        }
-    };
+    for (let i = row, j = col; i >= 0 && j < n; i--, j++) {
+      if (board[i][j] === 1) {
+        return false;
+      }
+    }
 
-    backtrack(0);
-    return answer;
+    return true;
+  }
+
+  function solveNQueens(board, row) {
+    if (row === n) {
+      count++;
+      return;
+    }
+
+    for (let col = 0; col < n; col++) {
+      if (isSafe(board, row, col)) {
+        board[row][col] = 1;
+        solveNQueens(board, row + 1);
+        board[row][col] = 0;
+      }
+    }
+  }
+
+  const board = new Array(n).fill().map(() => new Array(n).fill(0));
+
+  solveNQueens(board, 0);
+
+  return count;
 }
