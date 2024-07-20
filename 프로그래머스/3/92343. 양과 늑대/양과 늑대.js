@@ -5,7 +5,6 @@ function solution(info, edges) {
     const alps = Array.from(Array(n), (_, i) => String.fromCharCode(97 + i));
     
     const convertNumToAlp = (num) => alps[num]
-    const convertAlpToNum = (alp) => alps.indexOf(alp)
     
     edges = edges.map(([a,b])=>([convertNumToAlp(a),convertNumToAlp(b)]))
     
