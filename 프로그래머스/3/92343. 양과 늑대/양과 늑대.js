@@ -1,37 +1,32 @@
 function solution(info, edges) {
-    let answer = 0;
-    const n = info.length;
-    const tree = {};
-    const alps = Array.from(Array(n), (_, i) => String.fromCharCode(97 + i));
-    
-    const convertNumToAlp = (num) => alps[num]
-    
-    edges = edges.map(([a,b])=>([convertNumToAlp(a),convertNumToAlp(b)]))
-    
+    var answer = 0;
+    const tree = Array.from({ length: info.length }, () => new Array());
     edges.forEach((edge) => {
-        const [p, c] = edge;
-        if (!tree[c]) tree[c] = [];
-        if (!tree[p]) tree[p] = [];
-        tree[p].push(c);
-    })
-    
-    const possibles = [...tree['a']]
-    const findComb = (sheep, wolves, str, possible) => {
-        if (sheep <= wolves) return;
-        
-        answer = Math.max(answer, sheep);
-        
-        for(let i=0; i<n; i++) {
-            const nextStr = convertNumToAlp(i);
-            
-            if (str.includes(nextStr) || !possible.includes(nextStr)) continue
-            
-            info[i] 
-                ? findComb(sheep, wolves+1, str+nextStr, possible.slice().concat(...tree[nextStr])) 
-                : findComb(sheep+1, wolves, str+nextStr, possible.slice().concat(...tree[nextStr]))
+        const [s, e] = edge;
+        tree[s].push(e);
+    });
+
+    function DFS(node, lamb_count, wolf_count, defer_set = new Set()) {
+        if (lamb_count <= wolf_count) return;
+        answer = Math.max(answer, lamb_count);
+        for (let next of defer_set) {
+            let temp_set = new Set(defer_set);
+            temp_set.delete(next);
+            for (let n of tree[next]) {
+                temp_set.add(n);
+            }
+            if (info[next] === 0) {
+                DFS(next, lamb_count + 1, wolf_count, temp_set);
+            } else {
+                DFS(next, lamb_count, wolf_count + 1, temp_set);
+            }
         }
     }
-    findComb(1, 0, 'a', possibles);
-    
+
+    const set = new Set();
+    for (let next of tree[0]) {
+        set.add(next);
+    }
+    DFS(0, 1, 0, set);
     return answer;
 }
