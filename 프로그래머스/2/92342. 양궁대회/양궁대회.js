@@ -1,54 +1,64 @@
 function solution(n, info) {
-    let maxDiff = -1;
-    let answer = Array(11).fill(0);
+    let max = 0;
+    let answer = [-1];
+    let lion = Array(11).fill(0);
 
-    const calculateScore = (ryanInfo, apeachInfo) => {
-        let ryanScore = 0, apeachScore = 0;
-        for (let i = 0; i < 11; i++) {
-            if (ryanInfo[i] > apeachInfo[i]) {
-                ryanScore += (10 - i);
-            } else if (apeachInfo[i] > 0) {
-                apeachScore += (10 - i);
+    function DFS(level,count){
+        // 종료조건
+        if(level == 10){
+            lion[level] = count;
+            // 점수비교
+            let sum = 0
+            for (let i = 0; i < 10; i++) {
+                if(lion[i] > info[i]){
+                    sum = sum + (10 - i);
+                }else if(lion[i] === info[i]){
+                    continue;
+                }else{
+                    sum = sum - (10 - i);
+                }      
             }
-        }
-        return ryanScore - apeachScore;
-    };
 
-    const dfs = (count, idx, ryanInfo) => {
-        if (count > n) return;
-
-        if (idx === 11) {
-            if (count < n) {
-                ryanInfo[10] += (n - count);  // 남은 화살은 모두 0점 과녁에
-            }
-            const diff = calculateScore(ryanInfo, info);
-            if (diff > maxDiff) {
-                maxDiff = diff;
-                answer = ryanInfo.slice();
-            } else if (diff === maxDiff) {
-                for (let i = 10; i >= 0; i--) {
-                    if (ryanInfo[i] > answer[i]) {
-                        answer = ryanInfo.slice();
+            if(sum > max){
+                max = sum;
+                answer = [...lion];
+            }else if(sum == max){
+                // 낮은 개수를 더 맞추는 경우를 답으로 채용함
+                for (let j = 10; j > 0; j--) {
+                    if(answer[j] == lion[j]){
+                        continue;
+                    }else if(lion[j] > answer[j]){
+                        answer = [...lion];
                         break;
-                    } else if (ryanInfo[i] < answer[i]) {
+                    }else{
                         break;
                     }
                 }
             }
-            return;
+        // 계속진행
+        }else{
+
+            // 남은 화살개수가 없거나 + 어피차보다 많이 못맞출경우
+            if(count == 0 || count < info[level] + 1 ){
+                DFS(level+1,count);
+            }else{
+                // 어피치보다 많이 맞출경우
+                lion[level] = info[level] + 1
+                count = count - (info[level] + 1);
+                DFS(level+1,count)
+
+
+                // 다른 점수로 돌릴경우
+                lion[level] = 0
+                count = count + (info[level] + 1);
+                DFS(level+1,count)
+            }
+
         }
 
-        if (n - count > info[idx]) {
-            const newRyanInfo = ryanInfo.slice();
-            newRyanInfo[idx] = info[idx] + 1;
-            dfs(count + newRyanInfo[idx], idx + 1, newRyanInfo);
-        }
 
-        ryanInfo[idx] = 0;
-        dfs(count, idx + 1, ryanInfo);
-    };
+    }
+    DFS(0,n)
 
-    dfs(0, 0, Array(11).fill(0));
-
-    return maxDiff <= 0 ? [-1] : answer;
+    return answer;
 }
