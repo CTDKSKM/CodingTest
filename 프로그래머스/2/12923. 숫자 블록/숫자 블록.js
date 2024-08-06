@@ -1,19 +1,8 @@
 function solution(begin, end) {
     const answer = [];
     
-    const isPrime = (num) => {
-        if (num <= 1) return false;
-        if (num === 2) return true;
-        const sqrt = Math.sqrt(num);
-        for (let i = 2; i <= sqrt; i++) {
-            if (num % i === 0) return false;
-        }
-        return true;
-    };
-    
     const get = (num) => {
         if (num === 1) return 0
-        if (isPrime(num)) return 1
         
         const temp = [];
         
@@ -26,7 +15,9 @@ function solution(begin, end) {
             }
         }
         
-        return temp.at(-1);
+        if (temp.length) return temp.at(-1);
+        
+        return 1;
     }
 
     for (let i = begin; i <= end; i++) {
