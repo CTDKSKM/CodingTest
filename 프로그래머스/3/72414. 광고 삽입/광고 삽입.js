@@ -1,42 +1,45 @@
 function solution(play_time, adv_time, logs) {
     const convertTtoN = (timeStr) => {
-        const [hh, mm, ss] = timeStr.split(':');
-        return +hh*3600 + +mm*60 + +ss
-    }
+        const [hh, mm, ss] = timeStr.split(':').map(Number);
+        return hh * 3600 + mm * 60 + ss;
+    };
+
     const convertNtoT = (timeNum) => {
-        const hh = Math.floor(timeNum/3600);
-        const mm = Math.floor((timeNum-hh*3600)/60);
-        const ss = timeNum%60
-        return `${hh < 10 ? '0' + hh : hh}:${mm < 10 ? '0' + mm : mm}:${ss < 10 ? '0' + ss : ss}`
-    }
-    const P_T = convertTtoN(play_time)
-    const timeChecker = Array.from({length:P_T+1}, ()=>0);
-    logs.forEach((timeLog, idx)=>{
-        const [s, e] = timeLog.split('-');
-        const sIdx = convertTtoN(s);
-        const eIdx = convertTtoN(e);
-        
-        timeChecker[sIdx]++;
-        timeChecker[eIdx]--;
-    })
-    const dp = Array.from({length:timeChecker.length}, ()=>0);
-    for(let i=1; i<dp.length; i++) {
-        dp[i] = timeChecker[i] + dp[i-1]
-    }
-    const advTime = convertTtoN(adv_time);
-    let index = 0;
-    
-    let max = dp.slice(index, advTime+1).reduce((acc,cur)=>acc+cur, 0);
+        const f = num => String(Math.floor(num)).padStart(2, '0')
 
-    let ans = [index, max];
-    let temp = max;
-    for(let i = advTime; i<dp.length; i++, index++) {
-        temp += (dp[i] - dp[index]);
+        return `${f(timeNum / 3600)}:${f((timeNum % 3600) / 60)}:${f(timeNum % 60)}`;
+    };
 
-        if (temp > max) {
-            ans = [index+1, temp];
-            max = temp;
+    const playTimeInSeconds = convertTtoN(play_time);
+    const advTimeInSeconds = convertTtoN(adv_time);
+    const checker = Array(playTimeInSeconds + 1).fill(0);
+
+    logs.forEach(log => {
+        const [start, end] = log.split('-');
+        checker[convertTtoN(start)]++;
+        checker[convertTtoN(end)]--;
+    });
+
+    // 누적 시청자 수 계산
+    for (let i = 1; i <= playTimeInSeconds; i++) {
+        checker[i] += checker[i - 1];
+    }
+
+    // 누적 시간 계산
+    for (let i = 1; i <= playTimeInSeconds; i++) {
+        checker[i] += checker[i - 1];
+    }
+
+    let maxViewTime = checker[advTimeInSeconds];
+    let bestStartTime = 0;
+
+    for (let i = advTimeInSeconds; i <= playTimeInSeconds; i++) {
+        const viewTime = checker[i] - checker[i - advTimeInSeconds];
+        if (viewTime > maxViewTime) {
+            maxViewTime = viewTime;
+            bestStartTime = i - advTimeInSeconds + 1;
         }
     }
-    return play_time == adv_time ? "00:00:00" : convertNtoT(ans[0]);
+
+    return play_time === adv_time ? "00:00:00" : convertNtoT(bestStartTime);
 }
