@@ -1,23 +1,36 @@
-function bisect_gt(a, x) {
-    let lo = 0, hi = a.length;
-    while (lo < hi) {
-        let mid = Math.floor((lo + hi) / 2);
-        if (a[mid] < x) lo = mid + 1;
-        else hi = mid;
-    }
-    return a.length - lo;
-}
+const pipe = (..._) => _.reduce((g, f) => f(g)),
+  range = n => Array(n).fill().map((_, i) => i),
+  splitLast = arr => [arr.slice(0, -1), arr[arr.length - 1]];
+
+const lowerBound = (arr, value) => {
+  const helper = (l, r) => {
+    if (l >= r) return l;
+    const m = Math.floor((l + r) / 2);
+    if (arr[m] < value) return helper(m + 1, r);
+    return helper(l, m);
+  };
+  return helper(0, arr.length);
+};
 
 function solution(info, query) {
-    const table = {"c": 3, "j": 5, "p": 6, "b": 6, "f": 5, "s": 6, "-": 0};
-    const conv = (l, t) => [l.slice(0, -1).reduce((a, k) => (a << 3) + t(table[k[0]]), 0), Number(l[l.length - 1])];
-    info = info.map(s => conv(s.split(" "), x => 7 - x));
-    query = query.map(s => conv(s.split(" ").filter(c => c != "and"), x => x));
-    const map = new Map();
-    for (const [k, v] of info) {
-        if (!map.has(k)) map.set(k, []);
-        map.get(k).push(v);
-    }
-    const dict = Array.from(map.entries()).map(([k, l]) => [k, l.sort((a, b) => a - b)])
-    return query.map(([q, v]) => dict.reduce((a, [k, l]) => a + (k & q ? 0 : bisect_gt(l, v)), 0));
+  const db = pipe(
+    info.map(s => s.split(' ')).map(splitLast),
+    list =>
+      list.flatMap(([keywords, score]) =>
+        range(1 << 4).map(bit => [
+          range(4).map(i => bit & (1 << i)).map((c, i) => (c ? keywords[i] : '-')).reduce((key, c) => key + c),
+          score,
+        ]),
+      ),
+    entries => [...entries].sort((p, c) => p[1] - c[1]),
+    entries =>
+      entries.reduce((db, [key, score]) => (db[key] || (db[key] = []), db[key].push(+score), db), {}),
+  );
+
+  return query
+    .map(s => s.split(' ').filter(s => s !== 'and')).map(splitLast)
+    .map(([keywords, score]) => {
+      const scores = db[keywords.join('')] || [];
+      return scores.length - lowerBound(scores, score);
+    });
 }
