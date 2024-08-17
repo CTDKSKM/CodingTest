@@ -1,36 +1,64 @@
-const pipe = (..._) => _.reduce((g, f) => f(g)),
-  range = n => Array(n).fill().map((_, i) => i),
-  splitLast = arr => [arr.slice(0, -1), arr[arr.length - 1]];
-
-const lowerBound = (arr, value) => {
-  const helper = (l, r) => {
-    if (l >= r) return l;
-    const m = Math.floor((l + r) / 2);
-    if (arr[m] < value) return helper(m + 1, r);
-    return helper(l, m);
-  };
-  return helper(0, arr.length);
-};
-
-function solution(info, query) {
-  const db = pipe(
-    info.map(s => s.split(' ')).map(splitLast),
-    list =>
-      list.flatMap(([keywords, score]) =>
-        range(1 << 4).map(bit => [
-          range(4).map(i => bit & (1 << i)).map((c, i) => (c ? keywords[i] : '-')).reduce((key, c) => key + c),
-          score,
-        ]),
-      ),
-    entries => [...entries].sort((p, c) => p[1] - c[1]),
-    entries =>
-      entries.reduce((db, [key, score]) => (db[key] || (db[key] = []), db[key].push(+score), db), {}),
-  );
-
-  return query
-    .map(s => s.split(' ').filter(s => s !== 'and')).map(splitLast)
-    .map(([keywords, score]) => {
-      const scores = db[keywords.join('')] || [];
-      return scores.length - lowerBound(scores, score);
+function generateCombinations(arrays) {
+    let results = [''];
+    
+    arrays.forEach(array => {
+        let tempResults = [];
+        results.forEach(result => {
+            array.forEach(value => {
+                tempResults.push(result + value);
+            });
+        });
+        results = tempResults;
     });
+    
+    return results;
+}
+function solution(info, query) {
+    const devLangs = ['cpp', 'java', 'python', '-'];
+    const works = ['backend', 'frontend', '-'];
+    const exps = ['junior', 'senior', '-'];
+    const soulfoods = ['chicken', 'pizza', '-'];
+
+    const sum = [devLangs, works, exps, soulfoods];
+    const dict = {};
+
+    info.forEach((v) => {
+        const [lang, work, exp, soulfood, score] = v.split(' ');
+        const scoreValue = parseInt(score, 10);
+        const combinations = generateCombinations([
+            [lang, '-'],
+            [work, '-'],
+            [exp, '-'],
+            [soulfood, '-']
+        ]);
+
+        combinations.forEach(comb => {
+            if (!dict[comb]) dict[comb] = new Array(100001).fill(0);
+            dict[comb][scoreValue]++;
+        });
+    });
+
+    // dp 배열을 통해 점수 이상의 인원 수를 계산
+    for (let key in dict) {
+        for (let i = 99999; i >= 0; i--) {
+            dict[key][i] += dict[key][i + 1];
+        }
+    }
+
+    const result = [];
+    query.forEach(q => {
+        const [lang, work, exp, rest] = q.split(' and ');
+        const [soulfood, minScoreStr] = rest.split(' ');
+        const minScore = parseInt(minScoreStr, 10);
+        const searchKey = lang + work + exp + soulfood;
+        const scores = dict[searchKey];
+
+        if (scores) {
+            result.push(scores[minScore]);
+        } else {
+            result.push(0);
+        }
+    });
+
+    return result;
 }
