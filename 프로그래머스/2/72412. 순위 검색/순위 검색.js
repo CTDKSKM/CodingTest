@@ -1,64 +1,94 @@
-function generateCombinations(arrays) {
-    let results = [''];
-    
-    arrays.forEach(array => {
-        let tempResults = [];
-        results.forEach(result => {
-            array.forEach(value => {
-                tempResults.push(result + value);
-            });
-        });
-        results = tempResults;
-    });
-    
-    return results;
-}
-function solution(info, query) {
-    const devLangs = ['cpp', 'java', 'python', '-'];
-    const works = ['backend', 'frontend', '-'];
-    const exps = ['junior', 'senior', '-'];
-    const soulfoods = ['chicken', 'pizza', '-'];
+function bisectLeft(arr, score) {
+    let start = 0;
+    let end = arr.length;
 
-    const sum = [devLangs, works, exps, soulfoods];
-    const dict = {};
+    while (start < end) {
+        let mid = Math.floor((start + end) / 2);
 
-    info.forEach((v) => {
-        const [lang, work, exp, soulfood, score] = v.split(' ');
-        const scoreValue = parseInt(score, 10);
-        const combinations = generateCombinations([
-            [lang, '-'],
-            [work, '-'],
-            [exp, '-'],
-            [soulfood, '-']
-        ]);
-
-        combinations.forEach(comb => {
-            if (!dict[comb]) dict[comb] = new Array(100001).fill(0);
-            dict[comb][scoreValue]++;
-        });
-    });
-
-    // dp 배열을 통해 점수 이상의 인원 수를 계산
-    for (let key in dict) {
-        for (let i = 99999; i >= 0; i--) {
-            dict[key][i] += dict[key][i + 1];
+        if (arr[mid] < score) {
+            start = mid + 1;
+        } else {
+            end = mid;
         }
     }
 
-    const result = [];
-    query.forEach(q => {
-        const [lang, work, exp, rest] = q.split(' and ');
-        const [soulfood, minScoreStr] = rest.split(' ');
-        const minScore = parseInt(minScoreStr, 10);
-        const searchKey = lang + work + exp + soulfood;
-        const scores = dict[searchKey];
+    return start;
+}
 
-        if (scores) {
-            result.push(scores[minScore]);
-        } else {
-            result.push(0);
+class Node {
+    constructor() {
+        this.child = {};
+        this.data = [];
+    }
+}
+
+class Trie {
+    constructor() {
+        this.head = new Node();
+    }
+
+    insert(info) {
+        let currentNode = this.head;
+        let n = info.length;
+        for (let i = 0; i < n - 1; i++) {
+            if (!currentNode.child[info[i]]) {
+                currentNode.child[info[i]] = new Node();
+            }
+            currentNode = currentNode.child[info[i]];
         }
-    });
 
-    return result;
+        let scores = currentNode.data;
+        let score = parseInt(info[n - 1], 10);
+        let idx = bisectLeft(scores, score);
+        scores.splice(idx, 0, score);
+    }
+
+    search(query) {
+        let currentNode = [this.head];
+        let n = query.length;
+
+        for (let i = 0; i < n - 1; i++) {
+            let nextCurrentNode = [];
+            if (query[i] === '-') {
+                for (let node of currentNode) {
+                    for (let key in node.child) {
+                        nextCurrentNode.push(node.child[key]);
+                    }
+                }
+            } else {
+                for (let node of currentNode) {
+                    if (query[i] in node.child) {
+                        nextCurrentNode.push(node.child[query[i]]);
+                    }
+                }
+            }
+            currentNode = nextCurrentNode;
+        }
+
+        let count = 0;
+        let score = parseInt(query[n - 1], 10);
+
+        for (let node of currentNode) {
+            let scores = node.data;
+            let l = bisectLeft(scores, score);
+            count += scores.length - l;
+        }
+
+        return count;
+    }
+}
+
+function solution(info, query) {
+    let trie = new Trie();
+    for (let i of info) {
+        trie.insert(i.split(' '));
+    }
+
+    let answer = [];
+    for (let q of query) {
+        q = q.replace(/ and/g, '').split(' ');
+        answer.push(trie.search(q));
+    }
+
+    return answer;
 }
