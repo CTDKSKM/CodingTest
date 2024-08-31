@@ -1,52 +1,33 @@
 function solution(land) {
-    const n = land.length;
-    const m = land[0].length;
-    
-    const visited = Array.from({length: n}, ()=>Array.from({length:m}, ()=>false));
-    const dict = {};
-    let markNum = 1;
-    
-    const dfs = (y, x) => {
-        const stack = [[y, x]];
-        let size = 0;
-        while (stack.length) {
-            const [cy, cx] = stack.pop();
-            if (cy < 0 || cy >= n || cx < 0 || cx >= m || visited[cy][cx] || land[cy][cx] === 0) continue
-            visited[cy][cx] = true;
-            land[cy][cx] = markNum;
-            size++
-            
-            stack.push([cy - 1, cx]); // 상
-            stack.push([cy + 1, cx]); // 하
-            stack.push([cy, cx - 1]); // 좌
-            stack.push([cy, cx + 1]); // 우
-        }
-        dict[markNum] = size;
+  const dir = [[-1, 0], [1, 0], [0, -1], [0, 1]];
+  const getOilInfo = (x, y) => {
+    let oilInfo = [0, y, y];
+    let queue = [[x, y]];
+
+    while (queue.length) {
+      let [i, j] = queue.pop();
+      if (land[i][j] === 0) continue;
+      land[i][j] = 0;
+      oilInfo[0]++;
+      if (oilInfo[1] > j) oilInfo[1] = j;
+      if (oilInfo[2] < j) oilInfo[2] = j;
+      for (let [dx, dy] of dir) {
+        let newX = i + dx, newY = j + dy;
+        if (newX >= 0 && newX < land.length && newY >= 0 && newY < land[0].length 
+            && land[newX][newY] === 1)
+          queue.push([newX, newY]);
+      }
     }
-    
-    for(let i=0; i<n; i++) {
-        for(let j=0; j<m; j++) {
-            if (land[i][j] === 1) {
-                dfs(i, j);
-                markNum++
-            }
-        }
-    }
-    
-    let max = 0;
-    for(let i=0; i<m; i++) {
-        let oil = new Set();
-        for(let j=0; j<n; j++) {
-            if (land[j][i]) {
-                oil.add(land[j][i]);
-            }
-        }
-        
-        let temp = 0;
-        for(const mark of oil) temp += dict[mark]
-        
-        max = Math.max(max, temp)
-    }
-    
-    return max;
+    return oilInfo;
+  };
+
+  let values = new Array(land[0].length).fill(0);
+
+  for (let i = 0; i < land.length; i++)
+    for (let j = 0; j < land[0].length; j++)
+      if (land[i][j]) {
+        let [value, start, finish] = getOilInfo(i, j);
+        while (start <= finish) values[start++] += value;
+      }
+  return Math.max(...values);
 }
