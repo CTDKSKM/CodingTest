@@ -1,33 +1,44 @@
 function solution(land) {
-  const dir = [[-1, 0], [1, 0], [0, -1], [0, 1]];
-  const getOilInfo = (x, y) => {
-    let oilInfo = [0, y, y];
-    let queue = [[x, y]];
+    let answer = 0;
+    let key = 1;
+    var memo = new Map();
 
-    while (queue.length) {
-      let [i, j] = queue.pop();
-      if (land[i][j] === 0) continue;
-      land[i][j] = 0;
-      oilInfo[0]++;
-      if (oilInfo[1] > j) oilInfo[1] = j;
-      if (oilInfo[2] < j) oilInfo[2] = j;
-      for (let [dx, dy] of dir) {
-        let newX = i + dx, newY = j + dy;
-        if (newX >= 0 && newX < land.length && newY >= 0 && newY < land[0].length 
-            && land[newX][newY] === 1)
-          queue.push([newX, newY]);
-      }
+    for (let i = 0; i < land.length; i++) {
+        for (let j = 0; j < land[i].length; j++) {
+            if (land[i][j] === 1) memo.set(++key, dfsAndGetSearchCount(land, [i, j], key));
+        }
     }
-    return oilInfo;
-  };
+    for (let i = 0; i < land[0].length; i++) {
+        var count = 0;
+        var set = new Set();
 
-  let values = new Array(land[0].length).fill(0);
+        for (let row of land) {
+            set.add(row[i]);
+        }
+        for (let e of set) {
+            if (e > 0) count += memo.get(e);
+        }
+        if (count > 0) answer = Math.max(answer, count);
+    }
+    return answer;
+}
 
-  for (let i = 0; i < land.length; i++)
-    for (let j = 0; j < land[0].length; j++)
-      if (land[i][j]) {
-        let [value, start, finish] = getOilInfo(i, j);
-        while (start <= finish) values[start++] += value;
-      }
-  return Math.max(...values);
+function dfsAndGetSearchCount(array, start, key) {
+    let count = 1;
+    let stack = [start];
+    array[start[0]][start[1]] = key;
+
+    while (stack.length > 0) {
+        let outed = stack.pop();
+
+        for (let [x, y] of [[outed[0] - 1, outed[1]], [outed[0], outed[1] + 1], [outed[0] + 1, outed[1]], [outed[0], outed[1] - 1]]) {
+            if (x < 0 || x >= array.length || y < 0 || y >= array[0].length) continue;
+            if (array[x][y] == 1) {
+                array[x][y] = key;
+                count++;
+                stack.push([x, y]);
+            }
+        }
+    }
+    return count;
 }
