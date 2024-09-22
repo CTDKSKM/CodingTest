@@ -1,7 +1,5 @@
 function solution(diffs, times, limit) {
-    let low = 1;
-    let high = 100_000;
-    let min = high;
+    let [low, high, min] = [1, 100000, 100000];
 
     while (low <= high) {
         let mid = Math.floor((low + high) / 2), remain = limit, prev = 0;
